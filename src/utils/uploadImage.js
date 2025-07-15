@@ -18,8 +18,13 @@ const uploadImage = async (imageFile) => {
     );
     return response.data;
   } catch (err) {
-    console.error("Error uploading the image", err);
-    throw err;
+    if (err.response && err.response.data) {
+      console.error("Upload error response:", err.response.data);
+      alert(`Upload failed: ${err.response.data.message}`);
+    } else {
+      console.error("Upload error:", err.message);
+      alert(`Upload failed: ${err.message}`);
+    }
   }
 };
 
