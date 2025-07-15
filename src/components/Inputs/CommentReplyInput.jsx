@@ -7,8 +7,7 @@ import {
   LuWandSparkles,
 } from "react-icons/lu";
 import Input from "./Input";
-import { useState } from "react";
-import { resolveMediaUrl } from "../../utils/helper";
+import { useState } from "react"
 
 const CommentReplyInput = ({
   user,
@@ -50,7 +49,7 @@ const CommentReplyInput = ({
     <div className="mt-5 ml-10 relative">
       <div className="flex items-start gap-3">
         <img
-          src={resolveMediaUrl(user.profileImageUrl)}
+          src={user.profileImageUrl}
           alt={user.name}
           className="w-10 h-10 rounded-full"
         />

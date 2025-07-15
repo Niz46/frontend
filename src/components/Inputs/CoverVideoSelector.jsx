@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import { LuFileVideo, LuTrash } from "react-icons/lu";
-import { resolveMediaUrl } from "../../utils/helper";
 
 const CoverVideoSelector = ({ video, setVideo, preview, setPreview }) => {
   const inputRef = useRef(null);
@@ -50,7 +49,7 @@ const CoverVideoSelector = ({ video, setVideo, preview, setPreview }) => {
       ) : (
         <div className="relative w-full h-56">
           <video
-            src={resolveMediaUrl(preview || previewUrl)}
+            src={preview || previewUrl}
             className="w-full h-full object-cover rounded-md"
             controls
           />

@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import { LuUser, LuUpload, LuTrash } from "react-icons/lu";
-import { resolveMediaUrl } from "../../utils/helper";
 
 const ProfilePhotoSelector = ({ image, setImage, preview, setPreview }) => {
   const inputRef = useRef(null);
@@ -56,7 +55,7 @@ const ProfilePhotoSelector = ({ image, setImage, preview, setPreview }) => {
       ) : (
         <div className="relative">
           <img
-            src={resolveMediaUrl(preview || previewUrl)}
+            src={preview || previewUrl}
             alt="profile avatar"
             className="w-20 h-20 rounded-full object-cover"
           />
