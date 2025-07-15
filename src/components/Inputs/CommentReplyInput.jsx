@@ -8,6 +8,7 @@ import {
 } from "react-icons/lu";
 import Input from "./Input";
 import { useState } from "react";
+import { resolveMediaUrl } from "../../utils/helper";
 
 const CommentReplyInput = ({
   user,
@@ -49,7 +50,7 @@ const CommentReplyInput = ({
     <div className="mt-5 ml-10 relative">
       <div className="flex items-start gap-3">
         <img
-          src={user.profileImageUrl}
+          src={resolveMediaUrl(user.profileImageUrl)}
           alt={user.name}
           className="w-10 h-10 rounded-full"
         />

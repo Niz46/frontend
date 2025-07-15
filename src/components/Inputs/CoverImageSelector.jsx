@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { LuTrash, LuFileImage } from "react-icons/lu";
+import { resolveMediaUrl } from "../../utils/helper";
 
 const CoverImageSelector = ({ image, setImage, preview, setPreview }) => {
   const inputRef = useRef(null);
@@ -51,7 +52,7 @@ const CoverImageSelector = ({ image, setImage, preview, setPreview }) => {
       ) : (
         <div className="relative w-full h-56">
           <img
-            src={preview || previewUrl}
+            src={resolveMediaUrl(preview || previewUrl)}
             alt="Cover"
             className="w-full h-full object-cover rounded-md"
           />

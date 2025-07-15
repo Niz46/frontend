@@ -38,5 +38,7 @@ export const sanitizeMarkdown = (content) => {
 
 export const resolveMediaUrl = (url) => {
   if (!url) return "";
-  return /^https?:\/\//.test(url) ? url : `${BASE_URL}${url}`;
+  const resolvedUrl = /^https?:\/\//.test(url) ? url : `${BASE_URL}${url}`;
+  const timestamp = Date.now();
+  return `${resolvedUrl}?v=${timestamp}`;
 };

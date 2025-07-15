@@ -6,6 +6,7 @@ import { LuLogOut } from "react-icons/lu";
 import { BLOG_NAVBAR_DATA, SIDE_MENU_DATA } from "../../utils/data";
 import CardAvatar from "../Cards/CardAvatar";
 import { logout as logoutAction } from "../../store/slices/authSlice";
+import { resolveMediaUrl } from "../../utils/helper";
 
 const SideMenu = ({ activeMenu, isBlogMenu, setOpenSideMenu }) => {
   const dispatch = useDispatch();
@@ -43,7 +44,7 @@ const SideMenu = ({ activeMenu, isBlogMenu, setOpenSideMenu }) => {
         <div className="flex flex-col items-center justify-center gap-1 mt-3 mb-7">
           {user.profileImageUrl ? (
             <img
-              src={user.profileImageUrl}
+              src={resolveMediaUrl(user.profileImageUrl)}
               alt="avatar"
               className="w-20 h-20 bg-slate-400 rounded-full object-cover"
             />

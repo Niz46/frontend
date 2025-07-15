@@ -2,6 +2,7 @@ import axiosInstance from "../../../utils/axiosInstance";
 import { API_PATHS } from "../../../utils/apiPath";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { resolveMediaUrl } from "../../../utils/helper";
 
 const TrendingPostsSection = () => {
   const navigate = useNavigate();
@@ -56,7 +57,7 @@ const PostCard = ({ title, coverImageUrl, tags, onClick }) => {
 
       <div className="flex items-start gap-4 mt-2">
         <img
-          src={coverImageUrl}
+          src={resolveMediaUrl(coverImageUrl)}
           alt={title}
           className="w-14 h-14 object-cover rounded"
         />
