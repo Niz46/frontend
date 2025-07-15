@@ -15,6 +15,7 @@ import SignUp from "../../Auth/SignUp";
 import Modal from "../../Modal";
 
 import { setOpenAuthForm as setOpenAuthFormAction } from "../../../store/slices/authSlice";
+import SearchBarPopup from "../../../pages/Blog/components/SearchBarPopup";
 
 const BlogNavbar = ({ activeMenu }) => {
   const dispatch = useDispatch();
@@ -100,6 +101,7 @@ const BlogNavbar = ({ activeMenu }) => {
       </div>
 
       <AuthModal />
+      <SearchBarPopup isOpen={openSearchBar} setIsOpen={setOpenSearchBar} />
     </>
   );
 };
