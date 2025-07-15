@@ -10,7 +10,7 @@ const AdminLogin = () => {
     <>
       <div className="bg-white py-5 border-b border-gray-50">
         <div className="container mx-auto">
-          <div className="flex items-center justify-center gap-10">
+          <div className="flex items-center gap-10">
             <img src={LOGO} alt="logo" className="h-[24px] md:h-[36px]" />
             <span className="font-poppins font-extrabold text-[24px] md:text-4xl uppercase tracking-wider inline-block bg-gradient-to-r from-cyan-400 via-sky-500 to-indigo-600 bg-clip-text text-transparent drop-shadow-[0_4px_10px_rgba(0,0,0,0.25)] transform -skew-y-2">
               UAACAI
