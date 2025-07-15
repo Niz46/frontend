@@ -1,4 +1,4 @@
-export const BASE_URL = "http://localhost:3001";
+export const BASE_URL = "https://backend-mu6d.onrender.com";
 
 export const API_PATHS = {
   AUTH: {
@@ -10,7 +10,7 @@ export const API_PATHS = {
   IMAGE: {
     UPLOAD_IMAGE: "/api/auth/upload-image",
   },
-  
+
   VIDEO: {
     UPLOAD_VIDEO: "/api/auth/upload-video",
   },

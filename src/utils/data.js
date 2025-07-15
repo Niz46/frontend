@@ -58,5 +58,4 @@ export const BLOG_NAVBAR_DATA = [
     icon: LuTag,
     path: "/tag/Events",
   },
-
 ];
