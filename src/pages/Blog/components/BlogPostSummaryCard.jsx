@@ -34,7 +34,7 @@ const BlogPostSummaryCard = ({
         <p className="text-gray-700 text-xs mb-4 line-clamp-3">{description}</p>
 
         <div className="flex items-center flex-wrap gap-2 mb-4">
-          {tags.slice(0, 4).map((tag, index) => (
+          {tags.slice(0, 5).map((tag, index) => (
             <button
               className="bg-sky-200/50 text-sky-800/80 text-xs font-medium px-3 py-0.5 rounded-full text-nowrap cursor-pointer"
               key={index}
