@@ -1,13 +1,17 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATHS } from "../../utils/apiPath";
-import { UserContext } from "../../context/useContext";
-import AUTH_IMG from "/OIP.jpg";
 import Input from "../Inputs/Input";
 import { validateEmail } from "../../utils/helper";
 import ProfilePhotoSelector from "../Inputs/ProfilePhotoSelector";
 import uploadImage from "../../utils/uploadImage";
+import AUTH_IMG from "/OIP.jpg";
+import {
+  setUser as setUserAction,
+  setOpenAuthForm as setOpenAuthFormAction,
+} from "../../store/slices/authSlice";
 
 const SignUp = ({ setCurrentPage, showAdminToken = false }) => {
   const [profilePic, setProfilePic] = useState(null);
@@ -17,14 +21,14 @@ const SignUp = ({ setCurrentPage, showAdminToken = false }) => {
   const [adminAccessToken, setAdminAccessToken] = useState("");
   const [error, setError] = useState(null);
 
-  const { updateUser, setOpenAuthForm } = useContext(UserContext);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleSignUp = async (e) => {
     e.preventDefault();
     let profileImageUrl = "";
 
-    if (!fullName) {
+    if (!fullName.trim()) {
       setError("Please enter the full name.");
       return;
     }
@@ -49,20 +53,30 @@ const SignUp = ({ setCurrentPage, showAdminToken = false }) => {
         email,
         password,
         profileImageUrl,
-        // only send token when we're in admin flow
         ...(showAdminToken ? { adminAccessToken } : {}),
       });
 
-      const { token, role } = response.data;
+      const { token, role, ...rest } = response.data;
       if (token) {
+        // persist token
         localStorage.setItem("token", token);
-        updateUser(response.data);
-        setOpenAuthForm(false);
 
+        // update Redux auth state
+        dispatch(
+          setUserAction({
+            token,
+            role,
+            ...rest,
+          })
+        );
+        dispatch(setOpenAuthFormAction(false));
+
+        // redirect based on role
         if (role === "admin") {
-          return navigate("/admin/dashboard");
+          navigate("/admin/dashboard");
+        } else {
+          navigate("/");
         }
-        return navigate("/");
       }
     } catch (err) {
       const msg =
