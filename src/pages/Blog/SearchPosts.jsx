@@ -39,12 +39,12 @@ const SearchPosts = () => {
   return (
     <BlogLayout>
       <div>
-        <h3 className="">
+        <h3 className="text-lg font-medium">
           Showing search results matching:"{" "}
-          <span className="text-sky-500">{query}</span>"
+          <span className="font-semibold text-sky-500">{query}</span>"
         </h3>
 
-        <div className="">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
           {searchResults.length > 0 &&
             searchResults.map((item) => (
               <BlogPostSummaryCard
