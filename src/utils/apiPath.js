@@ -1,4 +1,4 @@
-export const BASE_URL = "https://backend-mu6d.onrender.com";
+export const BASE_URL = "https://uaacaiinternational-api.onrender.com";
 
 export const API_PATHS = {
   AUTH: {
