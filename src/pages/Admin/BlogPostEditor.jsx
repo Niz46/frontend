@@ -398,9 +398,7 @@ const BlogPostEditor = ({ isEdit }) => {
 
       <Modal
         isOpen={openDeleteAlert}
-        onClose={() => {
-          setOpenDeleteAlert(false);
-        }}
+        onClose={() => setOpenDeleteAlert(false)}
         title="Delete Alert"
       >
         <div className="w-[30vw]">

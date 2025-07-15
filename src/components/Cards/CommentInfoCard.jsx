@@ -8,6 +8,7 @@ import { LuChevronDown, LuDot, LuReply, LuTrash2 } from "react-icons/lu";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATHS } from "../../utils/apiPath";
 import CommentReplyInput from "../Inputs/CommentReplyInput";
+import { resolveMediaUrl } from "../../utils/helper";
 
 const CommentInfoCard = ({
   commentId,
@@ -61,7 +62,7 @@ const CommentInfoCard = ({
         <div className="col-span-12 md:col-span-8 order-2 md:order-1">
           <div className="flex items-start gap-3">
             <img
-              src={authorPhoto}
+              src={resolveMediaUrl(authorPhoto)}
               alt={authorName}
               className="w-10 h-10 rounded-full"
             />
@@ -116,7 +117,7 @@ const CommentInfoCard = ({
         {!isSubReply && (
           <div className="col-span-12 md:col-span-4 order-1 md:order-2 flex items-center gap-4">
             <img
-              src={post?.coverImageUrl}
+              src={resolveMediaUrl(post?.coverImageUrl)}
               alt="post cover"
               className="w-16 h-10 rounded-lg object-cover"
             />

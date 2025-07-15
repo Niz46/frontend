@@ -2,6 +2,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logout as logoutAction } from "../../store/slices/authSlice";
+import { resolveMediaUrl } from "../../utils/helper";
 
 const ProfileInfoCard = () => {
   const dispatch = useDispatch();
@@ -30,7 +31,7 @@ const ProfileInfoCard = () => {
     <div className="flex items-center">
       {avatarSrc ? (
         <img
-          src={avatarSrc}
+          src={resolveMediaUrl(avatarSrc)}
           alt="profile"
           className="w-11 h-11 bg-gray-300 rounded-full mr-3 object-cover"
         />

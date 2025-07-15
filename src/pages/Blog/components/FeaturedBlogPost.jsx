@@ -1,7 +1,9 @@
+import { resolveMediaUrl } from "../../../utils/helper";
+
 const FeaturedBlogPost = ({
   title,
   coverImageUrl,
-//   coverVideoUrl,
+  //   coverVideoUrl,
   description,
   tags = [],
   updatedOn,
@@ -16,11 +18,11 @@ const FeaturedBlogPost = ({
     >
       <div className="col-span-6">
         <img
-          src={coverImageUrl}
+          src={resolveMediaUrl(coverImageUrl)}
           alt={title}
           className="w-full h-80 object-cover"
         />
-        {/* <video src={coverVideoUrl} className="w-full h-80 object-cover"></video> */}
+        {/* <video src={resolveMediaUrl(coverVideoUrl)} className="w-full h-80 object-cover"></video> */}
       </div>
 
       <div className="col-span-6">
@@ -44,7 +46,11 @@ const FeaturedBlogPost = ({
           </div>
 
           <div className="flex items-center">
-            <img src={authorProfileImg} alt={authorName} className="w-8 h-8 rounded-full mr-2" />
+            <img
+              src={resolveMediaUrl(authorProfileImg)}
+              alt={authorName}
+              className="w-8 h-8 rounded-full mr-2"
+            />
 
             <div className="">
               <p className="text-gray-600 text-sm">{authorName}</p>

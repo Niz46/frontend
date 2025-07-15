@@ -1,3 +1,5 @@
+import BASE_URL from "./apiPath";
+
 export const getInitials = (title) => {
   if (title) return "";
 
@@ -32,4 +34,9 @@ export const sanitizeMarkdown = (content) => {
   const markdownBlockRegex = /^```(?:markdown)?\n([\s\S]*?)\n```$/;
   const match = content.match(markdownBlockRegex);
   return match ? match[1] : content;
+};
+
+export const resolveMediaUrl = (url) => {
+  if (!url) return "";
+  return /^https?:\/\//.test(url) ? url : `${BASE_URL}${url}`;
 };

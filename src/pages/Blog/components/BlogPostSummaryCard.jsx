@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { resolveMediaUrl } from "../../../utils/helper";
 
 const BlogPostSummaryCard = ({
   title,
@@ -19,11 +20,11 @@ const BlogPostSummaryCard = ({
     >
       <div className="">
         <img
-          src={coverImageUrl}
+          src={resolveMediaUrl(coverImageUrl)}
           alt={title}
           className="w-full h-64 object-cover"
         />
-        {/* <video src={coverVideoUrl} className="w-full h-64 objct-cover" /> */}
+        {/* <video src={resolveMediaUrl(coverVideoUrl)} className="w-full h-64 objct-cover" /> */}
       </div>
       <div className="p-4 md:p-6">
         <h2 className="text-base md:text-lg font-bold mb-2 line-clamp-3">
