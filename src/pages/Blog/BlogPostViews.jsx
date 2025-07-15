@@ -18,6 +18,7 @@ import SkeletonLoader from "../../components/Loader/SkeletonLoader";
 import Drawer from "../../components/Drawer";
 import { sanitizeMarkdown } from "../../utils/helper";
 import { setOpenAuthForm } from "../../store/slices/authSlice";
+import LikeCommentButton from "./components/LikeCommentButton";
 
 const BlogPostViews = () => {
   const { slug } = useParams();
@@ -262,6 +263,12 @@ const BlogPostViews = () => {
                     ))}
                 </div>
               </div>
+
+              <LikeCommentButton
+                postId={blogPostData._id || ""}
+                likes={blogPostData.likes || 0}
+                comments={comments?.length || 0}
+              />
             </div>
 
             {/* Sidebar */}
