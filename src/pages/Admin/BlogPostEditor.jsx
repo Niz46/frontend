@@ -272,14 +272,14 @@ const BlogPostEditor = ({ isEdit }) => {
                 image={postData.coverImageUrl}
                 setImage={(value) => handleValueChange("coverImageUrl", value)}
                 preview={postData.coverImagePreview}
-                setPreview={(value) => handleValueChange("coverPreview", value)}
+                setPreview={(value) => handleValueChange("coverImagePreview", value)}
               />
 
               <CoverVideoSelector
                 video={postData.coverVideoUrl}
                 setVideo={(value) => handleValueChange("coverVideoUrl", value)}
                 preview={postData.coverVideoPreview}
-                setPreview={(value) => handleValueChange("coverPreview", value)}
+                setPreview={(value) => handleValueChange("coverVideoPreview", value)}
               />
             </div>
 
