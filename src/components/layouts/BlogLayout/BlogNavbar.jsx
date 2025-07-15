@@ -6,7 +6,7 @@ import { LuSearch } from "react-icons/lu";
 import { Link } from "react-router-dom";
 
 import { BLOG_NAVBAR_DATA } from "../../../utils/data";
-import Logo from "/logo.svg";
+import Logo from "/logo.png";
 
 import SideMenu from "../SideMenu";
 import ProfileInfoCard from "../../Cards/ProfileInfoCard";
@@ -14,9 +14,7 @@ import Login from "../../Auth/Login";
 import SignUp from "../../Auth/SignUp";
 import Modal from "../../Modal";
 
-import {
-  setOpenAuthForm as setOpenAuthFormAction,
-} from "../../../store/slices/authSlice";
+import { setOpenAuthForm as setOpenAuthFormAction } from "../../../store/slices/authSlice";
 
 const BlogNavbar = ({ activeMenu }) => {
   const dispatch = useDispatch();
@@ -41,8 +39,26 @@ const BlogNavbar = ({ activeMenu }) => {
               )}
             </button>
 
-            <Link to="/">
-              <img src={Logo} alt="logo" className="h-[24px] md:h-[26px]" />
+            <Link to="/" className="flex items-center gap-2">
+              <img src={Logo} alt="logo" className="h-[24px] md:h-[36px]" />
+              <span
+                className="
+                          font-poppins 
+                          font-extrabold 
+                          text-4xl 
+                          uppercase 
+                          tracking-wider 
+                          inline-block 
+                          bg-gradient-to-r from-cyan-400 via-sky-500 to-indigo-600 
+                          bg-clip-text 
+                          text-transparent 
+                          drop-shadow-[0_4px_10px_rgba(0,0,0,0.25)] 
+                          transform 
+                          -skew-y-2
+                      "
+              >
+                UAACAI
+              </span>
             </Link>
           </div>
 
@@ -119,12 +135,8 @@ const AuthModal = () => {
   return (
     <Modal isOpen={isOpen} onClose={handleClose} hideHeader>
       <div>
-        {currentPage === "login" && (
-          <Login setCurrentPage={setCurrentPage} />
-        )}
-        {currentPage === "signup" && (
-          <SignUp setCurrentPage={setCurrentPage} />
-        )}
+        {currentPage === "login" && <Login setCurrentPage={setCurrentPage} />}
+        {currentPage === "signup" && <SignUp setCurrentPage={setCurrentPage} />}
       </div>
     </Modal>
   );

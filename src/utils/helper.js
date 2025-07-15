@@ -1,4 +1,4 @@
-import BASE_URL from "./apiPath";
+import { BASE_URL } from "./apiPath";
 
 export const getInitials = (title) => {
   if (title) return "";

@@ -1,7 +1,7 @@
 import { HiOutlineMenu, HiOutlineX } from "react-icons/hi";
 import SideMenu from "./SideMenu";
 
-import LOGO from "/logo.svg";
+import LOGO from "/logo.png";
 import { useState } from "react";
 
 const Navbar = ({ activeMenu }) => {
