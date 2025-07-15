@@ -39,24 +39,9 @@ const BlogNavbar = ({ activeMenu }) => {
               )}
             </button>
 
-            <Link to="/" className="flex items-center gap-2">
+            <Link to="/" className="flex items-center justify-center gap-2">
               <img src={Logo} alt="logo" className="h-[24px] md:h-[36px]" />
-              <span
-                className="
-                          font-poppins 
-                          font-extrabold 
-                          text-4xl 
-                          uppercase 
-                          tracking-wider 
-                          inline-block 
-                          bg-gradient-to-r from-cyan-400 via-sky-500 to-indigo-600 
-                          bg-clip-text 
-                          text-transparent 
-                          drop-shadow-[0_4px_10px_rgba(0,0,0,0.25)] 
-                          transform 
-                          -skew-y-2
-                      "
-              >
+              <span className="font-poppins font-extrabold text-4xl uppercase tracking-wider inline-block bg-gradient-to-r from-cyan-400 via-sky-500 to-indigo-600 bg-clip-text text-transparent drop-shadow-[0_4px_10px_rgba(0,0,0,0.25)] transform -skew-y-2">
                 UAACAI
               </span>
             </Link>

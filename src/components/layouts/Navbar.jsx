@@ -21,7 +21,13 @@ const Navbar = ({ activeMenu }) => {
         )}
       </button>
 
-      <img src={LOGO} alt="logo" className="h-[24px] md:h-[26px]" />
+      <div className="flex items-center justify-center gap-10">
+        <img src={LOGO} alt="logo" className="h-[24px] md:h-[26px]" />
+        <span className="font-poppins font-extrabold text-4xl uppercase tracking-wider inline-block bg-gradient-to-r from-cyan-400 via-sky-500 to-indigo-600 bg-clip-text text-transparent drop-shadow-[0_4px_10px_rgba(0,0,0,0.25)] transform -skew-y-2">
+          UAACAI
+        </span>
+      </div>
+      
 
       {openSideMenu && (
         <div className="fixed top-[61px] -ml-4 bg-white">
