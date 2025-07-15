@@ -1,4 +1,4 @@
-import { resolveMediaUrl } from "../../../utils/helper";
+
 
 const FeaturedBlogPost = ({
   title,
@@ -18,7 +18,7 @@ const FeaturedBlogPost = ({
     >
       <div className="col-span-6">
         <img
-          src={resolveMediaUrl(coverImageUrl)}
+          src={coverImageUrl}
           alt={title}
           className="w-full h-80 object-cover"
         />
@@ -47,7 +47,7 @@ const FeaturedBlogPost = ({
 
           <div className="flex items-center">
             <img
-              src={resolveMediaUrl(authorProfileImg)}
+              src={authorProfileImg}
               alt={authorName}
               className="w-8 h-8 rounded-full mr-2"
             />
