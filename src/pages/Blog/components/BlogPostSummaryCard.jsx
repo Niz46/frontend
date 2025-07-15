@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { resolveMediaUrl } from "../../../utils/helper";
+
 
 const BlogPostSummaryCard = ({
   title,
@@ -20,7 +20,7 @@ const BlogPostSummaryCard = ({
     >
       <div className="">
         <img
-          src={resolveMediaUrl(coverImageUrl)}
+          src={coverImageUrl}
           alt={title}
           className="w-full h-64 object-cover"
         />
@@ -50,7 +50,7 @@ const BlogPostSummaryCard = ({
 
         <div className="flex items-center">
           <img
-            src={resolveMediaUrl(authorProfileImg)}
+            src={authorProfileImg}
             alt={authorName}
             className="w-8 h-8 rounded-full mr-2"
           />

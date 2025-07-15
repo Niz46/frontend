@@ -1,6 +1,5 @@
 import moment from "moment";
 import { LuDot } from "react-icons/lu";
-import { resolveMediaUrl } from "../../utils/helper";
 
 const RecentCommentsList = ({ comments }) => {
   return (
@@ -12,7 +11,7 @@ const RecentCommentsList = ({ comments }) => {
             className="flex gap-4 border-b border-gray-100 pb-4 last:border-none"
           >
             <img
-              src={resolveMediaUrl(comment.author?.profileImageUrl)}
+              src={comment.author?.profileImageUrl}
               alt={comment.author?.name}
               className="w-10 h-10 rounded-full object-cover"
             />
@@ -36,7 +35,7 @@ const RecentCommentsList = ({ comments }) => {
               </div>
               <div className="mt-2 flex items-center gap-3">
                 <img
-                  src={resolveMediaUrl(comment.post?.coverImageUrl)}
+                  src={comment.post?.coverImageUrl}
                   alt={comment.post?.title}
                   className="w-9 h-9 rounded-md object-cover"
                 />

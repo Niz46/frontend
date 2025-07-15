@@ -1,5 +1,4 @@
 import { LuEye, LuHeart, LuTrash2 } from "react-icons/lu";
-import { resolveMediaUrl } from "../../utils/helper";
 
 const BlogPostSummaryCard = ({
   title,
@@ -19,12 +18,12 @@ const BlogPostSummaryCard = ({
     >
       <div className="flex flex-col gap-1">
         <img
-          src={resolveMediaUrl(imgUrl)}
+          src={imgUrl}
           alt={title}
           className="w-16 h-16 rounded-lg"
         />
         <video
-          src={resolveMediaUrl(videoUrl)}
+          src={videoUrl}
           className="w-16 h-16 rounded-lg"
         />
       </div>
