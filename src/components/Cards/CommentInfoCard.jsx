@@ -52,7 +52,7 @@ const CommentInfoCard = ({
 
   return (
     <div
-      className={`bg-white rounded-lg cursor-pointer group ${
+      className={`bg-white w-full rounded-lg cursor-pointer p-3.5 group ${
         isSubReply ? "mb-1" : "mb-4"
       }`}
     >

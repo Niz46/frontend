@@ -16,15 +16,15 @@ const BlogPostSummaryCard = ({
 
   return (
     <div
-      className="flex items-start gap-4 bg-white p-3 mb-5 rounded-lg cursor-pointer group"
+      className="flex flex-wrap items-start gap-4 bg-white p-3 mb-5 rounded-lg cursor-pointer group"
       onClick={onClick}
     >
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col md:flex-row gap-1">
         {imgUrl && (
           <img
             src={imgUrl}
             alt={title}
-            className="w-16 h-16 rounded-lg object-cover"
+            className="w-16 h-16 rounded-lg object-cover "
             crossOrigin="anonymous"
           />
         )}
@@ -62,7 +62,7 @@ const BlogPostSummaryCard = ({
 
           <div className="h-6 w-[1px] bg-gray-300/70" />
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {displayedTags.map((tag, index) => (
               <div
                 className="text-xs text-cyan-700 font-medium bg-cyan-100/50 px-2.5 py-1 rounded"

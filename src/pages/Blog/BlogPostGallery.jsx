@@ -28,7 +28,7 @@ const BlogPostGallery = () => {
 
   return (
     <BlogLayout activeMenu="Gallery">
-      <div className="w-[98.5vw] h-[86vh] rounded-lg overflow-hidden relative -left-16 -top-7">
+      <div className="w-[98.5vw] h-[86vh] rounded-lg overflow-hidden relative md:-left-16 md:-top-7 -left-4 -top-3">
         {status === "loading" ? (
           <div className="flex items-center justify-center h-full">
             <Loading />
@@ -48,7 +48,7 @@ const BlogPostGallery = () => {
             />
             <div className="absolute inset-0 bg-[rgba(0,0,0,0.5)] backdrop-blur-md z-0" />
 
-            <div className="flex w-full max-w-7xl h-[80vh] gap-2 items-center justify-center z-10 p-4">
+            <div className="flex w-full max-w-7xl h-[65vh] md:h-[80vh] gap-2 items-center justify-center z-10 p-4">
               {panels.map((panel, idx) => (
                 <div
                   key={idx}

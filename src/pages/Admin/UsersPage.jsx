@@ -21,7 +21,7 @@ const AdminUsersPage = () => {
 
   return (
     <DashboardLayout activeMenu="Users">
-      <div className="mt-6">
+      <div className="mt-6 w-auto sm:max-w-[900px] mx-auto">
         {/* Card container */}
         <div className="bg-white rounded-2xl shadow-md border border-gray-200/50 p-6">
           {/* Header */}
@@ -49,11 +49,11 @@ const AdminUsersPage = () => {
 
           {/* Users Table */}
           {status === "succeeded" && users.length > 0 && (
-            <div className="overflow-x-auto">
+            <div className="w-full flex flex-wrap">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">
+                    <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 hidden md:table-cell">
                       Avatar
                     </th>
                     <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">
@@ -65,7 +65,7 @@ const AdminUsersPage = () => {
                     <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">
                       Role
                     </th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">
+                    <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 hidden md:table-cell">
                       Joined
                     </th>
                   </tr>
@@ -76,7 +76,7 @@ const AdminUsersPage = () => {
                       key={u._id}
                       className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}
                     >
-                      <td className="px-4 py-3">
+                      <td className="px-4 py-3 hidden md:table-cell">
                         {u.profileImageUrl ? (
                           <img
                             src={u.profileImageUrl}
@@ -93,7 +93,7 @@ const AdminUsersPage = () => {
                       <td className="px-4 py-3 text-sm text-gray-800">
                         {u.name}
                       </td>
-                      <td className="px-4 py-3 text-sm text-gray-600">
+                      <td className="px-4 py-3 text-sm text-gray-600 break-all">
                         {u.email}
                       </td>
                       <td className="px-4 py-3 text-sm">
@@ -107,7 +107,7 @@ const AdminUsersPage = () => {
                           {u.role}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-sm text-gray-600">
+                      <td className="px-4 py-3 text-sm text-gray-600 hidden md:table-cell">
                         {new Date(u.createdAt).toLocaleDateString(undefined, {
                           year: "numeric",
                           month: "short",

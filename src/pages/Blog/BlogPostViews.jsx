@@ -134,7 +134,7 @@ const BlogPostViews = () => {
   }, [blogPostData, user]);
 
   return (
-    <BlogLayout>
+    <BlogLayout activeMenu="Home">
       {!blogPostData ? (
         <SkeletonLoader />
       ) : (
