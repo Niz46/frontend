@@ -272,14 +272,18 @@ const BlogPostEditor = ({ isEdit }) => {
                 image={postData.coverImageUrl}
                 setImage={(value) => handleValueChange("coverImageUrl", value)}
                 preview={postData.coverImagePreview}
-                setPreview={(value) => handleValueChange("coverImagePreview", value)}
+                setPreview={(value) =>
+                  handleValueChange("coverImagePreview", value)
+                }
               />
 
               <CoverVideoSelector
                 video={postData.coverVideoUrl}
                 setVideo={(value) => handleValueChange("coverVideoUrl", value)}
                 preview={postData.coverVideoPreview}
-                setPreview={(value) => handleValueChange("coverVideoPreview", value)}
+                setPreview={(value) =>
+                  handleValueChange("coverVideoPreview", value)
+                }
               />
             </div>
 
@@ -404,7 +408,7 @@ const BlogPostEditor = ({ isEdit }) => {
         <div className="w-[30vw]">
           <DeleteAlertContent
             content="Are you sure you want to delete this blog post?"
-            onDelete={() => deletePost}
+            onDelete={() => deletePost()}
           />
         </div>
       </Modal>
