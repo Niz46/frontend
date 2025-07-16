@@ -52,6 +52,8 @@ const CoverVideoSelector = ({ video, setVideo, preview, setPreview }) => {
             src={preview || previewUrl}
             className="w-full h-full object-cover rounded-md"
             controls
+            crossOrigin="anonymous"
+            playsInline
           />
           <button
             type="button"

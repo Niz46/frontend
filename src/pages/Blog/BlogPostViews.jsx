@@ -198,6 +198,7 @@ const BlogPostViews = () => {
                   playsInline
                   muted
                   loop
+                  crossOrigin="anonymous"
                 />
               </div>
 

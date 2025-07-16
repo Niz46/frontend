@@ -32,7 +32,10 @@ const BlogPostSummaryCard = ({
           <video
             src={videoUrl}
             className="w-16 h-16 rounded-lg object-cover"
-            muted
+            controls
+            crossOrigin="anonymous"
+            playsInline
+            loop
           />
         )}
       </div>
