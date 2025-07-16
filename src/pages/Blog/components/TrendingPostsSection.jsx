@@ -38,7 +38,7 @@ const TrendingPostsSection = () => {
             title={item.title}
             coverImageUrl={item.coverImageUrl}
             tags={item.tags}
-            onClick={() => handleClick()}
+            onClick={() => handleClick(item)}
           />
         ))}
     </div>
