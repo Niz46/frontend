@@ -57,6 +57,7 @@ const ProfilePhotoSelector = ({ image, setImage, preview, setPreview }) => {
           <img
             src={preview || previewUrl}
             alt="profile avatar"
+            crossOrigin="anonymous"
             className="w-20 h-20 rounded-full object-cover"
           />
           <button

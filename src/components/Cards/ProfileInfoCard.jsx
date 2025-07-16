@@ -33,6 +33,7 @@ const ProfileInfoCard = () => {
           src={avatarSrc}
           alt="profile"
           className="w-11 h-11 bg-gray-300 rounded-full mr-3 object-cover"
+          crossOrigin="anonymous"
         />
       ) : (
         <div className="w-11 h-11 bg-gray-300 rounded-full mr-3 flex items-center justify-center text-white">

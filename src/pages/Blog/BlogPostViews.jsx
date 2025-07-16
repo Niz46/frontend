@@ -188,6 +188,7 @@ const BlogPostViews = () => {
                 <img
                   src={blogPostData.coverImageUrl}
                   alt={blogPostData.title}
+                  crossOrigin="anonymous"
                   className="w-full md:w-1/2 h-96 object-cover mb-6 rounded-lg"
                 />
                 <video

@@ -13,6 +13,7 @@ const RecentCommentsList = ({ comments }) => {
             <img
               src={comment.author?.profileImageUrl}
               alt={comment.author?.name}
+              crossOrigin="anonymous"
               className="w-10 h-10 rounded-full object-cover"
             />
             <div className="flex-1">
@@ -37,6 +38,7 @@ const RecentCommentsList = ({ comments }) => {
                 <img
                   src={comment.post?.coverImageUrl}
                   alt={comment.post?.title}
+                  crossOrigin="anonymous"
                   className="w-9 h-9 rounded-md object-cover"
                 />
                 <p className="text-[13px] text-gray-700 line-clamp-2">

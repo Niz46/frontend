@@ -8,6 +8,7 @@ const TopPostCard = ({ title, coverImageUrl, views, likes, maxViews }) => {
         <img
           src={coverImageUrl}
           alt={title}
+          crossOrigin="anonymous"
           className="w-10 h-10 rounded-md object-cover"
         />
         <h3 className="text-sm font-medium text-gray-800 line-clamp-2">

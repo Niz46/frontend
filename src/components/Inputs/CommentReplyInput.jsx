@@ -51,6 +51,7 @@ const CommentReplyInput = ({
         <img
           src={user.profileImageUrl}
           alt={user.name}
+          crossOrigin="anonymous"
           className="w-10 h-10 rounded-full"
         />
 

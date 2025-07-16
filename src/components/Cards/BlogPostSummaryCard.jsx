@@ -25,6 +25,7 @@ const BlogPostSummaryCard = ({
             src={imgUrl}
             alt={title}
             className="w-16 h-16 rounded-lg object-cover"
+            crossOrigin="anonymous"
           />
         )}
         {videoUrl && (

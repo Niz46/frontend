@@ -58,6 +58,7 @@ const PostCard = ({ title, coverImageUrl, tags, onClick }) => {
         <img
           src={coverImageUrl}
           alt={title}
+          crossOrigin="anonymous"
           className="w-14 h-14 object-cover rounded"
         />
 

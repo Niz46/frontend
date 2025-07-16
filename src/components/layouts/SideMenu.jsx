@@ -45,6 +45,7 @@ const SideMenu = ({ activeMenu, isBlogMenu, setOpenSideMenu }) => {
             <img
               src={user.profileImageUrl}
               alt="avatar"
+              crossOrigin="anonymous"
               className="w-20 h-20 bg-slate-400 rounded-full object-cover"
             />
           ) : (

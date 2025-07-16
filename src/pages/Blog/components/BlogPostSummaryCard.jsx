@@ -22,6 +22,7 @@ const BlogPostSummaryCard = ({
         <img
           src={coverImageUrl}
           alt={title}
+          crossOrigin="anonymous"
           className="w-full h-64 object-cover"
         />
         {/* <video src={resolveMediaUrl(coverVideoUrl)} className="w-full h-64 objct-cover" /> */}
@@ -52,6 +53,7 @@ const BlogPostSummaryCard = ({
           <img
             src={authorProfileImg}
             alt={authorName}
+            crossOrigin="anonymous"
             className="w-8 h-8 rounded-full mr-2"
           />
 

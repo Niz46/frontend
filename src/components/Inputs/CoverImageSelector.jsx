@@ -53,6 +53,7 @@ const CoverImageSelector = ({ image, setImage, preview, setPreview }) => {
         <div className="relative w-full h-56">
           <img
             src={preview || previewUrl}
+            crossOrigin="anonymous"
             alt="Cover"
             className="w-full h-full object-cover rounded-md"
           />

@@ -18,6 +18,7 @@ const FeaturedBlogPost = ({
         <img
           src={coverImageUrl}
           alt={title}
+          crossOrigin="anonymous"
           className="w-full h-80 object-cover"
         />
         {/* <video src={resolveMediaUrl(coverVideoUrl)} className="w-full h-80 object-cover"></video> */}
@@ -47,6 +48,7 @@ const FeaturedBlogPost = ({
             <img
               src={authorProfileImg}
               alt={authorName}
+              crossOrigin="anonymous"
               className="w-8 h-8 rounded-full mr-2"
             />
 

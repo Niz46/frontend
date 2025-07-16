@@ -63,6 +63,7 @@ const CommentInfoCard = ({
             <img
               src={authorPhoto}
               alt={authorName}
+              crossOrigin="anonymous"
               className="w-10 h-10 rounded-full"
             />
 
@@ -118,6 +119,7 @@ const CommentInfoCard = ({
             <img
               src={post?.coverImageUrl}
               alt="post cover"
+              crossOrigin="anonymous"
               className="w-16 h-10 rounded-lg object-cover"
             />
             <div className="flex-1">

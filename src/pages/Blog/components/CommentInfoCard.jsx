@@ -60,6 +60,7 @@ const CommentInfoCard = ({
             <img
               src={authorPhoto}
               alt={authorName}
+              crossOrigin="anonymous"
               className="w-10 h-10 rounded-full"
             />
 
