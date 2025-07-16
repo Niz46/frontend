@@ -47,7 +47,7 @@ const BlogLandingPage = () => {
   };
 
   return (
-    <BlogLayout>
+    <BlogLayout activeMenu="Home">
       <div className="grid grid-cols-12 gap-5">
         <div className="col-span-12 md:col-span-9">
           {/* Featured */}

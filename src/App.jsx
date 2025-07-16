@@ -13,6 +13,7 @@ import Dashboard from "./pages/Admin/Dashboard";
 import BlogPosts from "./pages/Admin/BlogPosts";
 import BlogPostEditor from "./pages/Admin/BlogPostEditor";
 import Comments from "./pages/Admin/Comments";
+import AdminUsersPage from "./pages/Admin/UsersPage";
 
 const App = () => (
   <Router>
@@ -34,6 +35,7 @@ const App = () => (
           element={<BlogPostEditor isEdit />}
         />
         <Route path="/admin/comments" element={<Comments />} />
+        <Route path="/admin/users" element={<AdminUsersPage />} />
       </Route>
 
       {/* Admin login */}

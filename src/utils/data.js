@@ -5,6 +5,7 @@ import {
   LuMessageSquareQuote,
   LuLayoutTemplate,
   LuTag,
+  LuUser,
 } from "react-icons/lu";
 
 export const SIDE_MENU_DATA = [
@@ -27,6 +28,13 @@ export const SIDE_MENU_DATA = [
     label: "Comments",
     icon: LuMessageSquareQuote,
     path: "/admin/comments",
+  },
+
+  {
+    id: "04",
+    label: "Users",
+    icon: LuUser,
+    path: "/admin/users",
   },
 ];
 

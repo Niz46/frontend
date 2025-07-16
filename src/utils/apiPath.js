@@ -39,6 +39,10 @@ export const API_PATHS = {
     LIKE: (id) => `/api/posts/${id}/like`,
   },
 
+  USERS: {
+    GET_ALL: "/api/users",
+  },
+
   COMMENTS: {
     ADD: (postId) => `/api/comments/${postId}`,
     GET_ALL: "/api/comments",

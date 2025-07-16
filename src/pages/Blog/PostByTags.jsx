@@ -34,7 +34,7 @@ const PostByTags = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tagName]);
   return (
-    <BlogLayout>
+    <BlogLayout activeMenu={tagName}>
       <div>
         <div className="grid grid-cols-12 gap-5">
           <div className="col-span-12 md:col-span-9">
