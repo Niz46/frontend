@@ -12,7 +12,7 @@ const LikeCommentButton = ({ postId, likes, comments }) => {
   const handleLikeClike = async () => {
     if (!postId) return;
     try {
-      const response = await axiosInstance.post(API_PATHS.POSTS.LIKE, postId);
+      const response = await axiosInstance.post(API_PATHS.POSTS.LIKE(postId));
 
       if (response.data) {
         setPostLikes((prevState) => prevState + 1);
