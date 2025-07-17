@@ -54,8 +54,8 @@
   background-color: #d0f4ff !important;
 }
 
-.text-primary{
-  @apply text-sky-500
+.text-primary {
+  @apply text-sky-500;
 }
 
 .input-box {
@@ -84,4 +84,29 @@
 
 @media (forced-colors: active) {
   /* Modern high contrast styling */
+}
+
+@keyframes slideIn-out {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  10% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  90% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
+
+/* Apply the slideIn-out animation once, durations passed inline */
+.animate-slideIn-out {
+  animation-name: slideIn-out;
+  animation-fill-mode: forwards;
 }
