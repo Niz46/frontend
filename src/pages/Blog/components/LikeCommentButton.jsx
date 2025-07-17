@@ -1,5 +1,5 @@
 import { LuMessageCircleDashed } from "react-icons/lu";
-import { PiHandsClapping } from "react-icons/pi";
+import { PiHeart } from "react-icons/pi";
 import axiosInstance from "../../../utils/axiosInstance";
 import { API_PATHS } from "../../../utils/apiPath";
 import clsx from "clsx";
@@ -27,13 +27,13 @@ const LikeCommentButton = ({ postId, likes, comments }) => {
     }
   };
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div className="flex justify-center items-center h-auto">
       <div className="fixed bottom-8 right-8 px-6 py-3 bg-black text-white rounded-full shadow-lg flex items-center justify-center">
         <button
           className="flex items-end gap-2 cursor-pointer"
           onClick={handleLikeClike}
         >
-          <PiHandsClapping
+          <PiHeart
             className={clsx(
               "text-[22px] transition-transform duration-300",
               liked && "scale-125 text-cyan-500"

@@ -48,18 +48,25 @@ const BlogPostGallery = () => {
             />
             <div className="absolute inset-0 bg-[rgba(0,0,0,0.5)] backdrop-blur-md z-0" />
 
-            <div className="flex w-full max-w-7xl h-[65vh] md:h-[80vh] gap-2 items-center justify-center z-10 p-4">
+            {/* Thumbnail strip: now horizontally scrollable */}
+            <div
+              className="
+                w-full max-w-7xl h-[65vh] md:h-[80vh] z-10 p-4
+                overflow-x-auto overflow-y-hidden
+                whitespace-nowrap flex items-center justify-center gap-2
+              "
+            >
               {panels.map((panel, idx) => (
                 <div
                   key={idx}
                   onClick={() => handleClick(idx)}
                   className={`
-                    h-full rounded-2xl bg-white cursor-pointer
+                    inline-block h-full rounded-2xl bg-gray-500 cursor-pointer
                     transition-all duration-500 ease-in-out overflow-hidden
                     ${
                       expandedIndex === idx
-                        ? "w-[60%]"
-                        : "w-[10%] hover:bg-gray-200"
+                        ? "w-[85%] md:w-[60%]"
+                        : "w-[15%] md:w-[7%] hover:bg-gray-200"
                     }
                     min-w-[40px]
                   `}
