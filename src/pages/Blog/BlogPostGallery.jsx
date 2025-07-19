@@ -15,41 +15,40 @@ const LOCAL_STORAGE_KEY = "myUploads";
 
 const BlogPostGallery = () => {
   const dispatch = useDispatch();
-  const posts = useSelector((s) => s.blog.posts);
-  const status = useSelector((s) => s.blog.status);
-  const user = useSelector((s) => s.auth.user);
+  const posts = useSelector((state) => state.blog.posts);
+  const status = useSelector((state) => state.blog.status);
+  const user = useSelector((state) => state.auth.user);
 
-  // ─── Local state ───────────────────────────────────────────────────────────
   const [photos, setPhotos] = useState([]); // { src, title, author }
   const [slideshowIndex, setSlideshowIndex] = useState(0);
   const [slideshowOpen, setSlideshowOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
 
-  // ─── Authorization: user.name must contain “uaacaii” ───────────────────────
   const isAuthorized = useMemo(() => {
-    if (!user?.name) return false;
-    return /uaacaii$/i.test(user.name);
+    return !!user?.name && /uaacaii$/i.test(user.name);
   }, [user]);
 
-  // ─── 1) Fetch posts on mount ───────────────────────────────────────────────
+  // 1) Fetch posts on mount
   useEffect(() => {
     if (status === "idle") {
       dispatch(fetchPosts({ status: "published", page: 1 }));
     }
   }, [dispatch, status]);
 
-  // ─── 2) Build photo list whenever posts or storage change ────────────────
+  // 2) Build photo list whenever posts or storage change
   useEffect(() => {
     if (status !== "succeeded") return;
 
-    // a) Build from fetched posts
-    const postPhotos = posts.map((p) => ({
-      src: p.coverImageUrl,
-      title: p.title,
-      author: p.author?.name || "Unknown",
-    }));
+    // a) Flatten coverImageUrl arrays into individual entries
+    const postPhotos = posts.flatMap((post) =>
+      (post.coverImageUrl || []).map((url) => ({
+        src: url,
+        title: post.title,
+        author: post.author?.name || "Unknown",
+      }))
+    );
 
-    // b) Read any saved uploads from localStorage
+    // b) Read saved uploads
     const savedUrls = JSON.parse(
       localStorage.getItem(LOCAL_STORAGE_KEY) || "[]"
     );
@@ -59,42 +58,36 @@ const BlogPostGallery = () => {
       author: "You",
     }));
 
-    // c) Merge and set
     setPhotos([...postPhotos, ...savedPhotos]);
   }, [posts, status]);
 
-  // ─── 3) Handle drag‑and‑drop uploads ──────────────────────────────────────
+  // 3) Handle drag‑and‑drop uploads
   const onDrop = useCallback(
     async (files) => {
       if (!isAuthorized) {
         toast.error("You are not authorized to upload images.");
         return;
       }
-
       setUploading(true);
       try {
-        await Promise.all(
-          files.map(async (file) => {
-            const { imageUrl } = await uploadImages(file);
-
-            // a) Add to component state
+        for (const file of files) {
+          const results = await uploadImages(file);
+          // `results` is an array of { url, timestamp }
+          results.forEach(({ url }) => {
             setPhotos((prev) => [
               ...prev,
-              { src: imageUrl, title: "New Image", author: user.name },
+              { src: url, title: "New Image", author: user.name },
             ]);
-
-            // b) Persist to localStorage
-            const previous = JSON.parse(
+            const prevSaved = JSON.parse(
               localStorage.getItem(LOCAL_STORAGE_KEY) || "[]"
             );
             localStorage.setItem(
               LOCAL_STORAGE_KEY,
-              JSON.stringify([...previous, imageUrl])
+              JSON.stringify([...prevSaved, url])
             );
-
-            toast.success("Upload successful");
-          })
-        );
+          });
+        }
+        toast.success("Upload successful");
       } catch (err) {
         console.error(err);
         toast.error("Upload failed");
@@ -105,7 +98,7 @@ const BlogPostGallery = () => {
     [isAuthorized, user]
   );
 
-  // ─── 4) Open slideshow ────────────────────────────────────────────────────
+  // 4) Open slideshow
   const openSlideshow = (startIndex = 0) => {
     setSlideshowIndex(startIndex);
     setSlideshowOpen(true);
@@ -132,21 +125,14 @@ const BlogPostGallery = () => {
             {({ getRootProps, getInputProps }) => (
               <button
                 {...getRootProps()}
-                className={`
-                  px-4 py-2 bg-blue-600 text-white rounded text-sm
-                  focus:outline-none focus:ring ${
-                    uploading || !isAuthorized
-                      ? "opacity-50 cursor-not-allowed"
-                      : ""
-                  }
-                `}
+                className={`px-4 py-2 rounded text-sm focus:outline-none focus:ring ${
+                  uploading || !isAuthorized
+                    ? "bg-gray-300 cursor-not-allowed"
+                    : "bg-blue-600 text-white"
+                }`}
               >
                 <input {...getInputProps()} />
-                {uploading
-                  ? "Uploading…"
-                  : isAuthorized
-                  ? "Upload"
-                  : "Not Authorized"}
+                {uploading ? "Uploading…" : isAuthorized ? "Upload" : "Not Authorized"}
               </button>
             )}
           </Dropzone>
