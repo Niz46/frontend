@@ -7,7 +7,7 @@ import "yet-another-react-lightbox/styles.css";
 import { toast } from "react-hot-toast";
 
 import { fetchPosts } from "../../store/slices/blogSlice";
-import uploadImage from "../../utils/uploadImage";
+import uploadImages from "../../utils/uploadImage";
 import BlogLayout from "../../components/layouts/BlogLayout/BlogLayout";
 import Loading from "../../components/Loader/Loading";
 
@@ -75,7 +75,7 @@ const BlogPostGallery = () => {
       try {
         await Promise.all(
           files.map(async (file) => {
-            const { imageUrl } = await uploadImage(file);
+            const { imageUrl } = await uploadImages(file);
 
             // a) Add to component state
             setPhotos((prev) => [

@@ -1,87 +1,79 @@
+// src/components/Auth/SignUp.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATHS } from "../../utils/apiPath";
+import ProfilePhotoSelector from "../Inputs/ProfilePhotoSelector";
+import uploadImages from "../../utils/uploadImage";
 import Input from "../Inputs/Input";
 import { validateEmail } from "../../utils/helper";
-import ProfilePhotoSelector from "../Inputs/ProfilePhotoSelector";
-import uploadImage from "../../utils/uploadImage";
-import AUTH_IMG from "/OIP.jpg";
 import {
   setUser as setUserAction,
   setOpenAuthForm as setOpenAuthFormAction,
 } from "../../store/slices/authSlice";
+import AUTH_IMG from "/OIP.jpg";
 
 const SignUp = ({ setCurrentPage, showAdminToken = false }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  // form state
   const [profilePic, setProfilePic] = useState(null);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [adminAccessToken, setAdminAccessToken] = useState("");
   const [error, setError] = useState(null);
-
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-    let profileImageUrl = "";
+    setError(null);
 
-    if (!fullName.trim()) {
-      setError("Please enter the full name.");
-      return;
-    }
-    if (!validateEmail(email)) {
-      setError("Please enter a valid email address.");
-      return;
-    }
-    if (!password) {
-      setError("Please enter the password");
-      return;
-    }
-    setError("");
+    // basic validation
+    if (!fullName.trim()) return setError("Please enter your full name.");
+    if (!validateEmail(email)) return setError("Please enter a valid email.");
+    if (!password) return setError("Please enter a password.");
+
+    setLoading(true);
 
     try {
-      if (profilePic) {
-        const { imageUrl = "" } = await uploadImage(profilePic);
-        profileImageUrl = imageUrl;
+      // 1) upload image if selected
+      let profileImageUrl = null;
+      if (profilePic instanceof File) {
+        const [result] = await uploadImages(profilePic);
+        profileImageUrl = result.url;
       }
 
-      const response = await axiosInstance.post(API_PATHS.AUTH.REGISTER, {
+      // 2) send registration
+      const payload = {
         name: fullName,
         email,
         password,
         profileImageUrl,
-        ...(showAdminToken ? { adminAccessToken } : {}),
-      });
+        ...(showAdminToken && { adminAccessToken }),
+      };
+      const response = await axiosInstance.post(
+        API_PATHS.AUTH.REGISTER,
+        payload
+      );
 
-      const { token, role, ...rest } = response.data;
-      if (token) {
-        // persist token
-        localStorage.setItem("token", token);
+      // 3) persist token & user
+      const { token, role, ...userData } = response.data;
+      localStorage.setItem("token", token);
+      dispatch(setUserAction({ token, role, ...userData }));
+      dispatch(setOpenAuthFormAction(false));
 
-        // update Redux auth state
-        dispatch(
-          setUserAction({
-            token,
-            role,
-            ...rest,
-          })
-        );
-        dispatch(setOpenAuthFormAction(false));
-
-        // redirect based on role
-        if (role === "admin") {
-          navigate("/admin/dashboard");
-        } else {
-          navigate("/");
-        }
-      }
+      // 4) navigate based on role
+      navigate(role === "admin" ? "/admin/dashboard" : "/");
     } catch (err) {
-      const msg =
-        err.response?.data?.message || "Something went wrong. Try again later";
-      setError(msg);
+      setError(
+        err.response?.data?.message || "Registration failed. Try again."
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -99,23 +91,22 @@ const SignUp = ({ setCurrentPage, showAdminToken = false }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <Input
               value={fullName}
-              onChange={({ target }) => setFullName(target.value)}
+              onChange={(e) => setFullName(e.target.value)}
               label="Full Name"
               placeholder="John Doe"
-              type="text"
             />
 
             <Input
               value={email}
-              onChange={({ target }) => setEmail(target.value)}
+              onChange={(e) => setEmail(e.target.value)}
               label="Email"
               placeholder="example@gmail.com"
-              type="text"
+              type="email"
             />
 
             <Input
               value={password}
-              onChange={({ target }) => setPassword(target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               label="Password"
               placeholder="Min 8 characters"
               type="password"
@@ -124,25 +115,24 @@ const SignUp = ({ setCurrentPage, showAdminToken = false }) => {
             {showAdminToken && (
               <Input
                 value={adminAccessToken}
-                onChange={({ target }) => setAdminAccessToken(target.value)}
+                onChange={(e) => setAdminAccessToken(e.target.value)}
                 label="Admin Token"
                 placeholder="Access Code"
-                type="text"
               />
             )}
           </div>
 
-          {error && <p className="text-red-500 text-xs pb-2.5">{error}</p>}
+          {error && <p className="text-red-500 text-xs mt-2">{error}</p>}
 
-          <button type="submit" className="btn-primary">
-            Sign Up
+          <button type="submit" disabled={loading} className="btn-primary mt-4">
+            {loading ? "Signing up…" : "Sign Up"}
           </button>
 
           <p className="text-[13px] text-slate-800 mt-3">
-            Already have an account{" "}
+            Already have an account?{" "}
             <button
               type="button"
-              className="font-medium text-[16px] text-priamry underline cursor-pointer"
+              className="font-medium text-primary underline"
               onClick={() => setCurrentPage("login")}
             >
               Log In
@@ -152,7 +142,11 @@ const SignUp = ({ setCurrentPage, showAdminToken = false }) => {
       </div>
 
       <div className="hidden md:block">
-        <img src={AUTH_IMG} alt="signup" className="h-[520px] w-[33vw]" />
+        <img
+          src={AUTH_IMG}
+          alt="signup"
+          className="h-[520px] w-[33vw] object-cover"
+        />
       </div>
     </div>
   );

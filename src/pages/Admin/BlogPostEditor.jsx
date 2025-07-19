@@ -18,8 +18,8 @@ import BlogPostIdeaCard from "../../components/Cards/BlogPostIdeaCard";
 import SkeletonLoader from "../../components/Loader/SkeletonLoader";
 import Modal from "../../components/Modal";
 import GenerateBlogPostForm from "./components/GenerateBlogPostForm ";
-import uploadImage from "../../utils/uploadImage";
-import uploadVideo from "../../utils/uploadVideo";
+import uploadImages from "../../utils/uploadImage";
+import uploadVideos from "../../utils/uploadVideo";
 import { toast } from "react-hot-toast";
 import { getToastMessageByType } from "../../utils/helper";
 import DeleteAlertContent from "../../components/DeleteAlertContent";
@@ -81,9 +81,7 @@ const BlogPostEditor = ({ isEdit }) => {
   };
 
   const handlePublish = async (isDraft) => {
-    let coverImageUrl = "";
-    let coverVideoUrl = "";
-
+    // Basic validation
     if (!postData.title.trim()) {
       setError("Please enter a title");
       return;
@@ -92,8 +90,6 @@ const BlogPostEditor = ({ isEdit }) => {
       setError("Please enter some content");
       return;
     }
-
-    // only enforce media & tags when publishing
     if (!isDraft) {
       const hasImage = postData.coverImageUrl || postData.coverImagePreview;
       const hasVideo = postData.coverVideoUrl || postData.coverVideoPreview;
@@ -109,31 +105,57 @@ const BlogPostEditor = ({ isEdit }) => {
 
     setLoading(true);
     setError("");
-    try {
-      if (
-        postData.coverImageUrl instanceof File &&
-        postData.coverVideoUrl instanceof File
-      ) {
-        const imgUploadRes = await uploadImage(postData.coverImageUrl);
-        coverImageUrl = imgUploadRes.imageUrl || "";
 
-        const vidUploadRes = await uploadVideo(postData.coverVideoUrl);
-        coverVideoUrl = vidUploadRes.videoUrl || "";
-      } else {
-        coverImageUrl = postData.coverImagePreview;
-        coverVideoUrl = postData.coverVideoPreview;
+    try {
+      // 1) Prepare arrays of Files
+      const imageFiles = postData.coverImageUrl
+        ? Array.isArray(postData.coverImageUrl)
+          ? postData.coverImageUrl
+          : [postData.coverImageUrl]
+        : [];
+      const videoFiles = postData.coverVideoUrl
+        ? Array.isArray(postData.coverVideoUrl)
+          ? postData.coverVideoUrl
+          : [postData.coverVideoUrl]
+        : [];
+
+      // 2) Upload all images/videos and gather EVERY URL
+      let coverImageUrls = [];
+      let coverVideoUrls = [];
+
+      if (imageFiles.length) {
+        const imgResults = await uploadImages(imageFiles);
+        // imgResults is [{url, timestamp}, …]; pull out every URL
+        coverImageUrls = imgResults.map((r) => r.url);
+      } else if (postData.coverImagePreview) {
+        // use existing preview URLs if no new upload
+        coverImageUrls = Array.isArray(postData.coverImagePreview)
+          ? postData.coverImagePreview
+          : [postData.coverImagePreview];
       }
 
+      if (videoFiles.length) {
+        const vidResults = await uploadVideos(videoFiles);
+        coverVideoUrls = vidResults.map((r) => r.url);
+      } else if (postData.coverVideoPreview) {
+        coverVideoUrls = Array.isArray(postData.coverVideoPreview)
+          ? postData.coverVideoPreview
+          : [postData.coverVideoPreview];
+      }
+
+      // 3) Build payload with arrays of URLs
       const reqPayload = {
         title: postData.title,
         content: postData.content,
-        coverImageUrl,
-        coverVideoUrl,
+        // send arrays instead of single strings
+        coverImageUrl: coverImageUrls,
+        coverVideoUrl: coverVideoUrls,
         tags: postData.tags,
-        isDraft: isDraft ? true : false,
-        generatedByAI: true,
+        isDraft,
+        generatedByAI: postData.generatedByAI,
       };
 
+      // 4) Send to server
       const response = isEdit
         ? await axiosInstance.put(
             API_PATHS.POSTS.UPDATE(postData.id),
@@ -275,6 +297,8 @@ const BlogPostEditor = ({ isEdit }) => {
                 setPreview={(value) =>
                   handleValueChange("coverImagePreview", value)
                 }
+                multiple={true}
+                maxCount={10}
               />
 
               <CoverVideoSelector
@@ -284,6 +308,8 @@ const BlogPostEditor = ({ isEdit }) => {
                 setPreview={(value) =>
                   handleValueChange("coverVideoPreview", value)
                 }
+                multiple={true}
+                maxCount={5}
               />
             </div>
 

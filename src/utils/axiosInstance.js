@@ -41,4 +41,19 @@ axiosInstance.interceptors.response.use(
   }
 );
 
+// in axiosInstance.js, update the response error handler to:
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response) {
+      // print the entire JSON error from the server
+      console.error(">>> BACKEND ERROR PAYLOAD:", error.response.data);
+    } else if (error.code === "ECONNABORTED") {
+      console.error("Request timeout. Please try again.");
+    }
+    return Promise.reject(error);
+  }
+);
+
+
 export default axiosInstance;

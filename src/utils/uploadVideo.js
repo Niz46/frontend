@@ -1,25 +1,33 @@
+// src/utils/uploadVideos.js
 import { API_PATHS } from "./apiPath";
 import axiosInstance from "./axiosInstance";
 
-const uploadVideo = async (videoFile) => {
+/**
+ * Upload one File or an Array<File> to the `/upload-videos` endpoint.
+ * @param {File|File[]} videoFiles
+ * @returns {Promise<Array<{url: string, timestamp: string}>>}
+ */
+const uploadVideos = async (videoFiles) => {
+  const files = Array.isArray(videoFiles) ? videoFiles : [videoFiles];
   const formData = new FormData();
-  formData.append("video", videoFile);
+
+  files.forEach((file) => {
+    formData.append("videos", file);
+  });
 
   try {
     const response = await axiosInstance.post(
       API_PATHS.VIDEO.UPLOAD_VIDEO,
       formData,
       {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        headers: { "Content-Type": "multipart/form-data" },
       }
     );
     return response.data;
   } catch (err) {
-    console.error("Error uploading the video", err);
+    console.error("Upload videos error:", err.response?.data || err.message);
     throw err;
   }
 };
 
-export default uploadVideo;
+export default uploadVideos;
