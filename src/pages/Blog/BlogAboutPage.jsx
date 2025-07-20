@@ -172,13 +172,12 @@ const BlogAboutPage = () => {
               className="rounded-lg border-8 border-sky-800"
             />
             <div className="bg-white shadow-md rounded-lg p-6 text-center">
-              <h4 className="font-bold mb-2 text-sky-800">Address:</h4>
-              <p className="text-sm text-gray-500"></p>
+              <h4 className="font-bold mb-2 text-sky-800">Organization Details:</h4>
             </div>
             <div className="grid grid-cols-2 gap-4">
               {[
-                { title: "Email Us", icon: <LucideMail />, text: "" },
-                { title: "Contact Us", icon: <LuContact />, text: "" },
+                { title: "Email Us", icon: <LucideMail />, text: "enquiry@uaacaiinternational.org" },
+                { title: "Contact Us", icon: <LuContact />, text: "+234 803 322 2929" },
               ].map((card, i) => (
                 <div
                   key={i}
@@ -188,7 +187,7 @@ const BlogAboutPage = () => {
                   <div className="text-sm font-bold text-sky-800">
                     {card.title}
                   </div>
-                  <p className="text-xs text-gray-500">{card.text}</p>
+                  <p className="text-sm text-gray-500 font-medium">{card.text}</p>
                 </div>
               ))}
             </div>
