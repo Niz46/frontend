@@ -3,6 +3,7 @@ import {
   LuGalleryVerticalEnd,
   LuBook,
   LuMessageSquareQuote,
+  LuAlbum,
   LuLayoutTemplate,
   LuTag,
   LuUser,
@@ -55,13 +56,20 @@ export const BLOG_NAVBAR_DATA = [
 
   {
     id: "03",
+    label: "About",
+    icon: LuAlbum,
+    path: "/about",
+  },
+
+  {
+    id: "04",
     label: "Journals",
     icon: LuBook,
     path: "/tag/Journals",
   },
 
   {
-    id: "04",
+    id: "05",
     label: "Events",
     icon: LuTag,
     path: "/tag/Events",

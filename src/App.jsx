@@ -14,6 +14,7 @@ import BlogPosts from "./pages/Admin/BlogPosts";
 import BlogPostEditor from "./pages/Admin/BlogPostEditor";
 import Comments from "./pages/Admin/Comments";
 import AdminUsersPage from "./pages/Admin/UsersPage";
+import BlogAboutPage from "./pages/Blog/BlogAboutPage";
 
 const App = () => (
   <Router>
@@ -21,6 +22,7 @@ const App = () => (
       {/* Public */}
       <Route path="/" element={<BlogLandingPage />} />
       <Route path="/gallery" element={<BlogPostGallery />} />
+      <Route path="/about" element={<BlogAboutPage />} />
       <Route path="/:slug" element={<BlogPostViews />} />
       <Route path="/tag/:tagName" element={<PostByTags />} />
       <Route path="/search" element={<SearchPosts />} />
