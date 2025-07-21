@@ -30,6 +30,14 @@ const BlogLandingPage = () => {
     }
   }, [dispatch, status]);
 
+  const sortedByCreation = [...posts].sort((a, b) => {
+    // Parse the ISO string out of the $date wrapper:
+    const dateA = new Date(a.createdAt.$date);
+    const dateB = new Date(b.createdAt.$date);
+    // Subtract so that the later date (newer post) comes first:
+    return dateB - dateA;
+  });
+
   const handleLoadMore = () => {
     if (page < totalPages && status !== "loading") {
       dispatch(fetchPosts({ status: "published", page: page + 1 }));
@@ -51,29 +59,31 @@ const BlogLandingPage = () => {
       <div className="grid grid-cols-12 gap-5">
         <div className="col-span-12 md:col-span-9">
           {/* Featured */}
-          {posts.length > 0 && (
+          {sortedByCreation.length > 0 && (
             <FeaturedBlogPost
-              title={posts[0].title}
-              coverImageUrl={posts[0].coverImageUrl}
-              description={posts[0].content}
-              tags={posts[0].tags}
-              updatedOn={moment(posts[0].updatedAt).format("Do MMM YYYY")}
-              authorName={posts[0].author.name}
-              authorProfileImg={posts[0].author.profileImageUrl}
-              onClick={() => handleClick(posts[0])}
+              title={sortedByCreation[0].title}
+              coverImageUrl={sortedByCreation[0].coverImageUrl}
+              description={sortedByCreation[0].content}
+              tags={sortedByCreation[0].tags}
+              updatedOn={moment(sortedByCreation[0].createdAt.$date).format(
+                "Do MMM YYYY"
+              )}
+              authorName={sortedByCreation[0].author.name}
+              authorProfileImg={sortedByCreation[0].author.profileImageUrl}
+              onClick={() => handleClick(sortedByCreation[0])}
             />
           )}
 
           {/* Summary Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-            {posts.slice(1).map((post) => (
+            {sortedByCreation.slice(1).map((post) => (
               <BlogPostSummaryCard
                 key={post._id}
                 title={post.title}
                 coverImageUrl={post.coverImageUrl}
                 description={post.content}
                 tags={post.tags}
-                updatedOn={moment(post.updatedAt).format("Do MMM YYYY")}
+                updatedOn={moment(post.createdAt.$date).format("Do MMM YYYY")}
                 authorName={post.author.name}
                 authorProfileImg={post.author.profileImageUrl}
                 onClick={() => handleClick(post)}
