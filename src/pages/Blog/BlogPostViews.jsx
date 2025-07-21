@@ -42,6 +42,7 @@ const BlogPostViews = () => {
 
   // 1) Fetch post and comments
   useEffect(() => {
+    if (!user) return navigate("/about");
     const fetchData = async () => {
       try {
         const { data } = await axiosInstance.get(
@@ -57,7 +58,7 @@ const BlogPostViews = () => {
       }
     };
     fetchData();
-  }, [slug]);
+  }, [slug, user, navigate]);
 
   // 2) Increment views once per user
   useEffect(() => {

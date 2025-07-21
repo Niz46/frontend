@@ -36,11 +36,11 @@ const BlogAboutPage = () => {
               injustice, both in Nigeria and beyond.
             </p>
           </div>
-          <div className="hero-images flex-1 flex space-x-4 justify-center">
+          <div className="hero-images flex-1 flex-wrap flex space-x-4 justify-center">
             {[heroCircle1, heroCircle2, heroCircle3].map((src, i) => (
               <div
                 key={i}
-                className="w-32 h-32 rounded-full overflow-hidden ring-4 ring-sky-800 ring-offset-2 ring-offset-white"
+                className="w-28 h-28 md:w-32 md:h-32 rounded-full overflow-hidden ring-4 ring-sky-800 ring-offset-2 ring-offset-white"
               >
                 <img src={src} alt="" className="object-cover w-full h-full" />
               </div>
@@ -49,7 +49,7 @@ const BlogAboutPage = () => {
         </section>
 
         {/* “Sharing is Caring” section */}
-        <section className="sharing flex flex-col lg:flex-row items-start gap-12">
+        <section className="sharing flex flex-col lg:flex-row items-center md:items-start gap-12">
           <div className="sharing-images grid grid-cols-1 sm:grid-cols-2 gap-6 flex-1">
             <img
               src={feature1}
@@ -187,7 +187,7 @@ const BlogAboutPage = () => {
                   <div className="text-sm font-bold text-sky-800">
                     {card.title}
                   </div>
-                  <p className="text-sm text-gray-500 font-medium">{card.text}</p>
+                  <p className="text-[11px] break-all md:text-sm text-gray-500 font-medium">{card.text}</p>
                 </div>
               ))}
             </div>
