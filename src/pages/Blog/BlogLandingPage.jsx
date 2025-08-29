@@ -32,8 +32,8 @@ const BlogLandingPage = () => {
 
   const sortedByCreation = [...posts].sort((a, b) => {
     // Parse the ISO string out of the $date wrapper:
-    const dateA = new Date(a.createdAt.$date);
-    const dateB = new Date(b.createdAt.$date);
+    const dateA = new Date(a.createdAt); // backend now sends ISO strings
+    const dateB = new Date(b.createdAt);
     // Subtract so that the later date (newer post) comes first:
     return dateB - dateA;
   });
@@ -65,7 +65,7 @@ const BlogLandingPage = () => {
               coverImageUrl={sortedByCreation[0].coverImageUrl}
               description={sortedByCreation[0].content}
               tags={sortedByCreation[0].tags}
-              updatedOn={moment(sortedByCreation[0].createdAt.$date).format(
+              updatedOn={moment(sortedByCreation[0].createdAt).format(
                 "Do MMM YYYY"
               )}
               authorName={sortedByCreation[0].author.name}

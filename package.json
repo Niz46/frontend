@@ -25,7 +25,7 @@
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.6.3",
     "react-share": "^5.2.2",
-    "react-syntax-highlighter": "^15.6.1",
+    "react-syntax-highlighter": "^15.6.6",
     "recharts": "^3.0.2",
     "redux-persist": "^6.0.0",
     "remark-gfm": "^4.0.1",

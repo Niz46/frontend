@@ -1,4 +1,4 @@
-export const BASE_URL = "https://uaacainternational-api.onrender.com";
+export const BASE_URL = "https://uaacaiinternational-api-6zzt.onrender.com";
 
 export const API_PATHS = {
   AUTH: {

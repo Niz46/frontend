@@ -12,46 +12,50 @@ const TrendingPostsSection = () => {
       const response = await axiosInstance.get(
         API_PATHS.POSTS.GET_TRENDING_POSTS
       );
-
-      setPostList(response.data?.length > 0 ? response.data : []);
+      const posts = Array.isArray(response.data)
+        ? response.data
+        : response.data?.posts ?? [];
+      setPostList(posts);
     } catch (error) {
       console.error("Error fetching data:", error);
+      setPostList([]);
     }
-  };
-
-  const handleClick = (post) => {
-    navigate(`/${post.slug}`);
   };
 
   useEffect(() => {
     getTrendingPosts();
-    return () => {};
   }, []);
+
   return (
     <div>
-      <h4 className="text-base text-black font-bold mb-3">Recents Posts</h4>
+      <h4 className="text-base text-black font-bold mb-3">Recent Posts</h4>
 
-      {postList.length > 0 &&
+      {postList.length > 0 ? (
         postList.map((item) => (
           <PostCard
-            key={item._id}
+            key={item.id || item._id}
             title={item.title}
             coverImageUrl={item.coverImageUrl}
-            tags={item.tags}
-            onClick={() => handleClick(item)}
+            tags={item.tags || []}
+            onClick={() => navigate(`/${item.slug}`)}
           />
-        ))}
+        ))
+      ) : (
+        <p className="text-sm text-gray-500">No trending posts</p>
+      )}
     </div>
   );
 };
 
 export default TrendingPostsSection;
 
-const PostCard = ({ title, coverImageUrl, tags, onClick }) => {
+const PostCard = ({ title, coverImageUrl, tags = [], onClick }) => {
+  const firstTag = tags.length ? tags[0] : null;
+
   return (
     <div className="cursor-pointer mb-3" onClick={onClick}>
       <h6 className="text-[11px] font-medium text-sky-500">
-        {tags[0]?.toUpperCase() || "BLOG"}
+        {(firstTag && firstTag.toUpperCase()) || "BLOG"}
       </h6>
 
       <div className="flex items-start gap-4 mt-2">
