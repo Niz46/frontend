@@ -46,11 +46,11 @@ const BlogPostViews = () => {
     const fetchData = async () => {
       try {
         const { data } = await axiosInstance.get(
-          API_PATHS.POSTS.GET_BY_SLUG(slug)
+          API_PATHS.POSTS.GET_BY_SLUG(slug),
         );
         setBlogPostData(data);
         const commentsRes = await axiosInstance.get(
-          API_PATHS.COMMENTS.GET_ALL_BY_POST(data._id)
+          API_PATHS.COMMENTS.GET_ALL_BY_POST(data._id),
         );
         setComments(commentsRes.data);
       } catch (err) {
@@ -60,15 +60,27 @@ const BlogPostViews = () => {
     fetchData();
   }, [slug, user, navigate]);
 
-  // 2) Increment views once per user
+  // use `id` (fallback to slug if id missing) and validate before sending
   useEffect(() => {
     if (!blogPostData || !user) return;
-    const viewKey = `viewed_${user.id}_${blogPostData._id}`;
+    const postId = blogPostData.id ?? blogPostData._id ?? blogPostData.slug;
+    if (!postId) {
+      console.warn(
+        "Cannot increment view: missing post id or slug",
+        blogPostData,
+      );
+      return;
+    }
+
+    const viewKey = `viewed_${user.id}_${postId}`;
     if (localStorage.getItem(viewKey)) return;
+
     axiosInstance
-      .post(API_PATHS.POSTS.INCREMENT_VIEW(blogPostData._id))
+      .post(API_PATHS.POSTS.INCREMENT_VIEW(postId))
       .then(() => localStorage.setItem(viewKey, "true"))
-      .catch(console.error);
+      .catch((err) => {
+        console.error("Failed to increment view:", err);
+      });
   }, [blogPostData, user]);
 
   // 3) Add comment handler
@@ -83,7 +95,7 @@ const BlogPostViews = () => {
       setReplyText("");
       setShowReplyForm(false);
       const commentsRes = await axiosInstance.get(
-        API_PATHS.COMMENTS.GET_ALL_BY_POST(blogPostData._id)
+        API_PATHS.COMMENTS.GET_ALL_BY_POST(blogPostData._id),
       );
       setComments(commentsRes.data);
     } catch (err) {
@@ -101,7 +113,7 @@ const BlogPostViews = () => {
       setOpenSummarizeDrawer(true);
       const response = await axiosInstance.post(
         API_PATHS.AI.GENERATE_POST_SUMMARY,
-        { content: blogPostData.content || "" }
+        { content: blogPostData.content || "" },
       );
       setSummaryContent(response.data);
     } catch (err) {
@@ -289,7 +301,7 @@ const BlogPostViews = () => {
                 replies={comment.replies || []}
                 getAllComments={async () => {
                   const res = await axiosInstance.get(
-                    API_PATHS.COMMENTS.GET_ALL_BY_POST(blogPostData._id)
+                    API_PATHS.COMMENTS.GET_ALL_BY_POST(blogPostData._id),
                   );
                   setComments(res.data);
                 }}
