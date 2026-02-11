@@ -1,7 +1,7 @@
 import { HiOutlineMenu, HiOutlineX } from "react-icons/hi";
 import SideMenu from "./SideMenu";
 
-import LOGO from "/logo.png";
+import LOGO from "/UAACAII LOGO.png";
 import { useState } from "react";
 
 const Navbar = ({ activeMenu }) => {
@@ -22,15 +22,15 @@ const Navbar = ({ activeMenu }) => {
       </button>
 
       <div className="flex items-center justify-center gap-4">
-        <img src={LOGO} alt="logo" className="h-[24px] md:h-[36px]" />
-        <span className="font-poppins font-extrabold text-[24px] md:text-4xl uppercase tracking-wider inline-block bg-gradient-to-r from-cyan-400 via-sky-500 to-indigo-600 bg-clip-text text-transparent drop-shadow-[0_4px_10px_rgba(0,0,0,0.25)] transform -skew-y-2">
+        <img src={LOGO} alt="logo" className="h-18 md:h-19" />
+        <span className="font-poppins font-extrabold text-[24px] md:text-4xl uppercase tracking-wider inline-block bg-linear-to-r from-cyan-400 via-sky-500 to-indigo-600 bg-clip-text text-transparent drop-shadow-[0_4px_10px_rgba(0,0,0,0.25)] transform -skew-y-2">
           UAACAI
         </span>
       </div>
       
 
       {openSideMenu && (
-        <div className="fixed top-[61px] -ml-4 bg-white">
+        <div className="fixed top-15.25 -ml-4 bg-white">
           <SideMenu activeMenu={activeMenu} setOpenSideMenu={setOpenSideMenu} />
         </div>
       )}

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import LOGO from "/logo.png";
+import LOGO from "/UAACAII LOGO.png";
 import Login from "../../components/Auth/Login";
 import SignUp from "../../components/Auth/SignUp";
 
@@ -11,7 +11,7 @@ const AdminLogin = () => {
       <div className="bg-white py-5 border-b border-gray-50">
         <div className="container mx-auto">
           <div className="flex items-center ml-5 gap-4">
-            <img src={LOGO} alt="logo" className="h-[24px] md:h-[36px]" />
+            <img src={LOGO} alt="logo" className="h-18 md:h-19" />
             <span className="font-poppins font-extrabold text-[24px] md:text-4xl uppercase tracking-wider inline-block bg-gradient-to-r from-cyan-400 via-sky-500 to-indigo-600 bg-clip-text text-transparent drop-shadow-[0_4px_10px_rgba(0,0,0,0.25)] transform -skew-y-2">
               UAACAI
             </span>
