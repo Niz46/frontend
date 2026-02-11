@@ -12,15 +12,31 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    const accessToken = localStorage.getItem("token");
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
+    try {
+      const accessToken = localStorage.getItem("token");
+      if (accessToken) {
+        config.headers = config.headers || {};
+        config.headers.Authorization = `Bearer ${accessToken}`;
+      }
+
+      // If the body is FormData, remove any pre-set Content-Type headers so the
+      // browser/axios will set multipart/form-data with the correct boundary.
+      if (config && config.data instanceof FormData) {
+        if (config.headers) {
+          // Remove both common casings
+          if (config.headers["Content-Type"])
+            delete config.headers["Content-Type"];
+          if (config.headers["content-type"])
+            delete config.headers["content-type"];
+        }
+      }
+    } catch (err) {
+      // don't block request on interceptor error; just log
+      console.error("axiosInstance request interceptor error:", err);
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error),
 );
 
 axiosInstance.interceptors.response.use(
@@ -38,7 +54,7 @@ axiosInstance.interceptors.response.use(
       console.error("Request timeout. Please try again.");
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 // in axiosInstance.js, update the response error handler to:
@@ -52,8 +68,7 @@ axiosInstance.interceptors.response.use(
       console.error("Request timeout. Please try again.");
     }
     return Promise.reject(error);
-  }
+  },
 );
-
 
 export default axiosInstance;

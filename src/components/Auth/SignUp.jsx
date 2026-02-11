@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATHS } from "../../utils/apiPath";
 import ProfilePhotoSelector from "../Inputs/ProfilePhotoSelector";
-import uploadImages from "../../utils/uploadImage";
+import uploadImagesPublic from "../../utils/uploadImage";
 import Input from "../Inputs/Input";
 import { validateEmail } from "../../utils/helper";
 import {
@@ -43,8 +43,13 @@ const SignUp = ({ setCurrentPage, showAdminToken = false }) => {
       // 1) upload image if selected
       let profileImageUrl = null;
       if (profilePic instanceof File) {
-        const [result] = await uploadImages(profilePic);
-        profileImageUrl = result.url;
+        // enable debugFormData in development only
+        // eslint-disable-next-line no-undef
+        const debug = process.env.NODE_ENV === "development";
+        const [result] = await uploadImagesPublic(profilePic, {
+          debugFormData: debug,
+        });
+        profileImageUrl = result?.url || result?.secure_url || null;
       }
 
       // 2) send registration
@@ -57,7 +62,7 @@ const SignUp = ({ setCurrentPage, showAdminToken = false }) => {
       };
       const response = await axiosInstance.post(
         API_PATHS.AUTH.REGISTER,
-        payload
+        payload,
       );
 
       // 3) persist token & user
@@ -70,7 +75,7 @@ const SignUp = ({ setCurrentPage, showAdminToken = false }) => {
       navigate(role === "admin" ? "/admin/dashboard" : "/");
     } catch (err) {
       setError(
-        err.response?.data?.message || "Registration failed. Try again."
+        err.response?.data?.message || "Registration failed. Try again.",
       );
     } finally {
       setLoading(false);

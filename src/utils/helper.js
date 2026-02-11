@@ -42,3 +42,11 @@ export const resolveMediaUrl = (url) => {
   const timestamp = Date.now();
   return `${resolvedUrl}?v=${timestamp}`;
 };
+
+export default function resolveImageUrl(value, { fallback = null } = {}) {
+  if (!value) return fallback;
+  if (typeof value !== "string") return fallback;
+  if (/^https?:\/\//i.test(value)) return value;
+  // Anything else is unexpected now (we moved to Cloudinary) — return fallback
+  return fallback;
+}

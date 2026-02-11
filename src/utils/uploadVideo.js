@@ -19,13 +19,13 @@ const uploadVideos = async (videoFiles) => {
     const response = await axiosInstance.post(
       API_PATHS.VIDEO.UPLOAD_VIDEO,
       formData,
-      {
-        headers: { "Content-Type": "multipart/form-data" },
-      }
     );
     return response.data;
   } catch (err) {
-    console.error("Upload videos error:", err.response?.data || err.message);
+    console.error(
+      "Upload videos error:",
+      err?.response?.data || err?.message || err,
+    );
     throw err;
   }
 };
