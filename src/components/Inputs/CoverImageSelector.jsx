@@ -71,7 +71,7 @@ const CoverImageSelector = ({
       ) : (
         <div className="relative w-full">
           {multiple && localPreviews.length > 1 ? (
-            <MultiPreviewGrid urls={localPreviews} />
+            <MultiPreviewGrid urls={localPreviews} size="100%" />
           ) : (
             <div className="relative w-full h-56">
               <img

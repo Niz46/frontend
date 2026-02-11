@@ -40,6 +40,29 @@ const BlogPostViews = () => {
   const [slideshowOpen, setSlideshowOpen] = useState(false);
   const [slideshowIndex, setSlideshowIndex] = useState(0);
 
+  // helper to coerce many possible shapes into an array of strings
+  const normalizeToArray = (val) => {
+    if (!val) return [];
+    if (Array.isArray(val)) return val.filter(Boolean);
+    if (typeof val === "string") {
+      const raw = val.trim();
+      // if comma-separated list, split
+      if (raw.includes(",")) {
+        return raw
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean);
+      }
+      return [raw];
+    }
+    if (typeof val === "object") {
+      // cloudinary-style object or single-file object
+      const candidate = val.secure_url || val.url || val.public_url || null;
+      return candidate ? [candidate] : [];
+    }
+    return [];
+  };
+
   // 1) Fetch post and comments
   useEffect(() => {
     if (!user) return navigate("/about");
@@ -133,16 +156,14 @@ const BlogPostViews = () => {
     );
   }
 
+  // Normalize cover arrays for safe usage
+  const coverImages = normalizeToArray(blogPostData.coverImageUrl);
+  const coverVideos = normalizeToArray(blogPostData.coverVideoUrl);
+
   // Build media list now that blogPostData is non-null
   const mediaUrls = [
-    ...(blogPostData.coverImageUrl || []).map((url) => ({
-      url,
-      isVideo: false,
-    })),
-    ...(blogPostData.coverVideoUrl || []).map((url) => ({
-      url,
-      isVideo: true,
-    })),
+    ...coverImages.map((url) => ({ url, isVideo: false })),
+    ...coverVideos.map((url) => ({ url, isVideo: true })),
   ];
 
   const openAt = (index) => {
@@ -155,8 +176,8 @@ const BlogPostViews = () => {
       <title>{blogPostData.title}</title>
       <meta name="description" content={blogPostData.title} />
       <meta name="og:title" content={blogPostData.title} />
-      <meta name="og:image" content={blogPostData.coverImageUrl[0] || ""} />
-      <meta name="og:video" content={blogPostData.coverVideoUrl[0] || ""} />
+      <meta name="og:image" content={coverImages[0] || ""} />
+      <meta name="og:video" content={coverVideos[0] || ""} />
       <meta name="og:type" content="article" />
 
       <div className="grid grid-cols-12 gap-8 relative">
@@ -168,7 +189,7 @@ const BlogPostViews = () => {
 
           <div className="flex items-center gap-1 flex-wrap mt-3 mb-5">
             <span className="text-[13px] text-gray-500 font-medium">
-              {moment(blogPostData.updatedAt).format("Do MMM YYYY")}
+              {moment(blogPostData.updatedAt).format("Do MMM YYYY")}
             </span>
             <LuDot className="text-xl text-gray-400" />
 
@@ -194,7 +215,7 @@ const BlogPostViews = () => {
             </button>
           </div>
 
-          {/* Dynamic cover‑media section */}
+          {/* Dynamic cover-media section */}
           <div className="mb-6">
             {mediaUrls.length > 1 ? (
               <div className="grid gap-1 grid-cols-2 grid-rows-2 w-full aspect-square">
@@ -227,27 +248,25 @@ const BlogPostViews = () => {
               </div>
             ) : (
               <div className="w-fit flex flex-col md:flex-row gap-2">
-                {blogPostData.coverImageUrl[0] && (
+                {coverImages[0] && (
                   <img
-                    src={blogPostData.coverImageUrl[0]}
+                    src={coverImages[0]}
                     alt={blogPostData.title}
                     crossOrigin="anonymous"
                     className="w-full md:w-1/2 h-96 object-cover mb-6 rounded-lg"
                     onClick={() => openAt(0)}
                   />
                 )}
-                {blogPostData.coverVideoUrl[0] && (
+                {coverVideos[0] && (
                   <video
-                    src={blogPostData.coverVideoUrl[0]}
+                    src={coverVideos[0]}
                     className="w-full md:w-1/2 h-96 object-cover mb-6 rounded-lg"
                     controls
                     playsInline
                     muted
                     loop
                     crossOrigin="anonymous"
-                    onClick={() =>
-                      openAt(blogPostData.coverImageUrl[0] ? 1 : 0)
-                    }
+                    onClick={() => openAt(coverImages[0] ? 1 : 0)}
                   />
                 )}
               </div>
@@ -297,7 +316,7 @@ const BlogPostViews = () => {
                 authorName={comment.author.name}
                 authorPhoto={comment.author.profileImageUrl}
                 content={comment.content}
-                updatedOn={moment(comment.updatedAt).format("Do MMM YYYY")}
+                updatedOn={moment(comment.updatedAt).format("Do MMM YYYY")}
                 replies={comment.replies || []}
                 getAllComments={async () => {
                   const res = await axiosInstance.get(

@@ -1,5 +1,5 @@
 // src/components/Cards/BlogPostSummaryCard.jsx
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 
@@ -8,7 +8,7 @@ import MultiPreviewGrid from "../MultiPreviewGrid";
 
 const BlogPostSummaryCard = ({
   title,
-  imgUrls = [], // now an array of strings
+  imgUrls = [], // could be array OR string OR null depending on API
   videoUrl,
   updatedOn,
   tags = [],
@@ -18,6 +18,29 @@ const BlogPostSummaryCard = ({
   onDelete,
 }) => {
   const displayedTags = tags.slice(0, 6);
+
+  // Normalize imgUrls to an array of strings
+  const normalizedImgUrls = useMemo(() => {
+    if (!imgUrls) return [];
+    if (Array.isArray(imgUrls)) return imgUrls.filter(Boolean);
+    if (typeof imgUrls === "string") {
+      // If comma-separated (just in case) split; otherwise single string -> single item
+      if (imgUrls.includes(",")) {
+        return imgUrls
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean);
+      }
+      return [imgUrls];
+    }
+    // if it's an object with url-like props (cloudinary objects), try to pick common keys
+    if (typeof imgUrls === "object") {
+      const candidate =
+        imgUrls.secure_url || imgUrls.url || imgUrls.public_url || null;
+      return candidate ? [candidate] : [];
+    }
+    return [];
+  }, [imgUrls]);
 
   // Lightbox state
   const [slideshowOpen, setSlideshowOpen] = useState(false);
@@ -30,7 +53,7 @@ const BlogPostSummaryCard = ({
   }, []);
 
   // Build slides array for Lightbox
-  const slides = imgUrls.map((src) => ({ src }));
+  const slides = normalizedImgUrls.map((src) => ({ src }));
 
   return (
     <>
@@ -40,17 +63,17 @@ const BlogPostSummaryCard = ({
       >
         {/* MEDIA PREVIEW */}
         <div className="flex-shrink-0">
-          {imgUrls.length > 1 ? (
+          {normalizedImgUrls.length > 1 ? (
             <div onClick={(e) => e.stopPropagation()}>
               <MultiPreviewGrid
-                urls={imgUrls}
+                urls={normalizedImgUrls}
                 onImageClick={openSlideshowAt}
                 size={64}
               />
             </div>
-          ) : imgUrls.length === 1 ? (
+          ) : normalizedImgUrls.length === 1 ? (
             <img
-              src={imgUrls[0]}
+              src={normalizedImgUrls[0]}
               alt={title}
               className="w-16 h-16 rounded-lg object-cover"
               crossOrigin="anonymous"

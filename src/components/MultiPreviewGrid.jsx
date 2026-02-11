@@ -6,10 +6,18 @@ import React from "react";
  *
  * Props:
  * - urls: string[]  (array of image/video URLs)
- * - isVideo: boolean
+ * - isVideo: boolean  (if true, render videos)
  * - onImageClick / onItemClick: (index) => void
- * - size: number (px). If omitted, defaults to 64 (h-16 / w-16)
+ * - size: number | string (px when number, or any CSS size string like "100%", "200px")
  * - className: optional additional classes for the container
+ *
+ * Behavior:
+ * - If size is a number -> treated as px (e.g. 64 -> "64px")
+ * - If size is a string -> used as-is
+ * - Default size is 64 (px) for backward compatibility
+ *
+ * The component uses `aspect-ratio` to stay square and lets the parent control width
+ * when you pass size="100%".
  */
 const MultiPreviewGrid = ({
   urls = [],
@@ -22,7 +30,7 @@ const MultiPreviewGrid = ({
   const display = urls.slice(0, 4);
   const extra = Math.max(0, urls.length - 4);
 
-  // grid classes based on count (keeps same visual arrangement, but inside fixed box)
+  // grid classes based on count
   let gridClass = "grid gap-1";
   if (display.length === 2) gridClass += " grid-cols-2";
   else if (display.length === 3) gridClass += " grid-cols-2 grid-rows-2";
@@ -35,25 +43,32 @@ const MultiPreviewGrid = ({
     if (typeof handler === "function") handler(idx);
   };
 
-  // wrapper inline size (use numbers for px)
-  const wrapperStyle = { width: size, height: size };
+  // prepare size style:
+  const sizeValue =
+    typeof size === "number" ? `${size}px` : String(size || "64px");
+
+  // wrapper style: width controllable, aspect-ratio to keep it square and responsive.
+  const wrapperStyle = {
+    width: sizeValue,
+    aspectRatio: "1 / 1", // keep square
+    display: "grid",
+    gridTemplateColumns:
+      display.length === 1
+        ? "1fr"
+        : display.length === 2
+          ? "1fr 1fr"
+          : undefined,
+  };
 
   return (
     <div
       className={`${gridClass} ${className}`}
-      style={{
-        ...wrapperStyle,
-        // ensure the content doesn't stretch: let grid items fit the square
-        display: "grid",
-        gridTemplateColumns:
-          display.length === 1
-            ? "1fr"
-            : display.length === 2
-              ? "1fr 1fr"
-              : undefined,
-      }}
+      style={wrapperStyle}
+      aria-hidden={display.length === 0}
     >
       {display.map((url, i) => {
+        // For 3 items, keep first as row-span-2 visually if you want,
+        // but row-span requires parent grid rows — Tailwind's row-span can be used.
         const spanClass = display.length === 3 && i === 0 ? "row-span-2" : "";
         return (
           <div
@@ -64,10 +79,8 @@ const MultiPreviewGrid = ({
               handleClick(i);
             }}
             style={{
-              // ensure each cell occupies correct fraction
               width: "100%",
               height: "100%",
-              objectFit: "cover",
             }}
           >
             {isVideo ? (
