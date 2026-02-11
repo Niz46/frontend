@@ -8,7 +8,7 @@ import MultiPreviewGrid from "../MultiPreviewGrid";
 
 const BlogPostSummaryCard = ({
   title,
-  imgUrls = [],      // now an array of strings
+  imgUrls = [], // now an array of strings
   videoUrl,
   updatedOn,
   tags = [],
@@ -44,7 +44,8 @@ const BlogPostSummaryCard = ({
             <div onClick={(e) => e.stopPropagation()}>
               <MultiPreviewGrid
                 urls={imgUrls}
-                onItemClick={openSlideshowAt}
+                onImageClick={openSlideshowAt}
+                size={64}
               />
             </div>
           ) : imgUrls.length === 1 ? (
@@ -56,6 +57,10 @@ const BlogPostSummaryCard = ({
               onClick={(e) => {
                 e.stopPropagation();
                 openSlideshowAt(0);
+              }}
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = "/profile-1.jpg";
               }}
             />
           ) : videoUrl ? (

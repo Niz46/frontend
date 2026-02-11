@@ -2,6 +2,7 @@ import axiosInstance from "../../../utils/axiosInstance";
 import { API_PATHS } from "../../../utils/apiPath";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { resolveMediaUrl } from "../../../utils/helper";
 
 const TrendingPostsSection = () => {
   const navigate = useNavigate();
@@ -10,11 +11,11 @@ const TrendingPostsSection = () => {
   const getTrendingPosts = async () => {
     try {
       const response = await axiosInstance.get(
-        API_PATHS.POSTS.GET_TRENDING_POSTS
+        API_PATHS.POSTS.GET_TRENDING_POSTS,
       );
       const posts = Array.isArray(response.data)
         ? response.data
-        : response.data?.posts ?? [];
+        : (response.data?.posts ?? []);
       setPostList(posts);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -60,7 +61,7 @@ const PostCard = ({ title, coverImageUrl, tags = [], onClick }) => {
 
       <div className="flex items-start gap-4 mt-2">
         <img
-          src={coverImageUrl}
+          src={resolveMediaUrl(coverImageUrl)}
           alt={title}
           crossOrigin="anonymous"
           className="w-14 h-14 object-cover rounded"

@@ -1,4 +1,5 @@
 import { LuHeart } from "react-icons/lu";
+import { resolveMediaUrl } from "../../utils/helper";
 
 const TopPostCard = ({ title, coverImageUrl, views, likes, maxViews }) => {
   const viewPercentage = ((views / maxViews) * 100).toFixed(0);
@@ -6,7 +7,7 @@ const TopPostCard = ({ title, coverImageUrl, views, likes, maxViews }) => {
     <div className="bg-white py-4 flex flex-col gap-3">
       <div className="flex items-start gap-2">
         <img
-          src={coverImageUrl}
+          src={resolveMediaUrl(coverImageUrl)}
           alt={title}
           crossOrigin="anonymous"
           className="w-10 h-10 rounded-md object-cover"
@@ -20,7 +21,7 @@ const TopPostCard = ({ title, coverImageUrl, views, likes, maxViews }) => {
         <div
           className="h-full bg-linear-to-r from-sky-500 to-cyan-400 rounded-full transition-all duration-300"
           style={{
-            width: `${viewPercentage}`,
+            width: `${viewPercentage}%`,
           }}
         ></div>
       </div>

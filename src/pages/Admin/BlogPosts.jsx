@@ -111,7 +111,7 @@ const BlogPosts = () => {
             <BlogPostSummaryCard
               key={post._id}
               title={post.title}
-              imgUrl={post.coverImageUrl}
+              imgUrls={post.coverImageUrl}
               videoUrl={post.coverVideoUrl}
               updatedOn={
                 post.updatedAt
