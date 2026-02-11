@@ -166,26 +166,30 @@ const AboutPage = () => {
 
   return (
     <BlogLayout activeMenu="About">
-      <main className="about-container max-w-7xl mx-auto px-6 py-12">
+      <main className="about-container max-w-7xl mx-auto px-6 py-6">
         {/* Hero */}
         <header className="text-center">
-          <div className="inline-flex items-center gap-6 bg-gradient-to-r from-sky-50 to-white/60 px-6 py-6 rounded-xl shadow-lg">
+          <div className="inline-flex flex-col sm:flex-row items-center gap-6 bg-gradient-to-r from-sky-50 to-white/60 px-6 py-6 rounded-xl shadow-lg">
             <img
               src={Logo}
               alt="UAACAI Logo"
-              className="w-52 sm:w-64 md:w-72 lg:w-[450px] h-auto object-contain drop-shadow-2xl"
+              className="flex-none w-40 sm:w-52 md:w-64 lg:w-[450px] max-w-full h-auto object-contain drop-shadow-2xl"
             />
-            <div className="text-left">
-              <h1 className="text-3xl sm:text-4xl font-extrabold leading-tight">
-                United Action Against Corruption & Injustice (UAACAI)
+
+            {/* text column: allow shrinking with min-w-0 and take remaining space with flex-1 */}
+            <div className="text-left flex-1 min-w-0">
+              <h1 className="text-lg sm:text-2xl md:text-4xl font-extrabold leading-tight break-words">
+                United Action Against Corruption &amp; Injustice (UAACAI)
                 International
               </h1>
+
               <p className="mt-2 text-sky-600 font-semibold">
                 Motto: To Fight Corruption And Injustice
               </p>
+
               <div className="mt-3">
-                <div className="inline-flex rounded-full bg-sky-100/60 px-3 py-1 text-sm font-medium text-sky-700 shadow-sm">
-                  Registered CAC:{" "}
+                <div className="inline-flex rounded-full bg-sky-100/60 px-3 py-1 text-sm font-medium text-sky-700 shadow-sm whitespace-normal sm:whitespace-nowrap">
+                  Registered CAC:
                   <span className="ml-2 font-semibold">CAC/AIT/NO.25796</span>
                 </div>
               </div>

@@ -39,7 +39,7 @@ const BlogPosts = () => {
       const { posts, totalPages, counts } = response.data;
 
       setBlogPostList((prevPost) =>
-        pageNumber === 1 ? posts : [...prevPost, ...posts]
+        pageNumber === 1 ? posts : [...prevPost, ...posts],
       );
       setTotalPages(totalPages);
       setPage(pageNumber);
@@ -61,7 +61,16 @@ const BlogPosts = () => {
   };
 
   const deletePost = async (postId) => {
+    if (!postId) {
+      console.error("deletePost called without postId");
+      toast.error("Invalid post selected");
+      setOpenDeleteAlert({ open: false, data: null });
+      return;
+    }
+
     try {
+      // debug/log request url (helps when debugging)
+      console.log("Deleting post:", postId, API_PATHS.POSTS.DELETE(postId));
       await axiosInstance.delete(API_PATHS.POSTS.DELETE(postId));
 
       toast.success("Blog Post Deleted Successfully");
@@ -69,9 +78,16 @@ const BlogPosts = () => {
         open: false,
         data: null,
       });
-      getAllPost();
+      // refresh first page (or you can remove deleted item locally)
+      getAllPost(1);
     } catch (error) {
-      console.log("Error deleting blog post:", error);
+      console.error("Error deleting blog post:", error);
+      // give user a helpful toast
+      if (error?.response?.status === 404) {
+        toast.error("Post not found (it may have been removed already)");
+      } else {
+        toast.error("Failed to delete post. See console for details.");
+      }
     }
   };
 
@@ -109,7 +125,7 @@ const BlogPosts = () => {
         <div className="mt-5">
           {blogPostList.map((post) => (
             <BlogPostSummaryCard
-              key={post._id}
+              key={post.id}
               title={post.title}
               imgUrls={post.coverImageUrl}
               videoUrl={post.coverVideoUrl}
@@ -123,7 +139,7 @@ const BlogPosts = () => {
               views={post.views}
               onClick={() => navigate(`/admin/edit/${post.slug}`)}
               onDelete={() =>
-                setOpenDeleteAlert({ open: true, data: post._id })
+                setOpenDeleteAlert({ open: true, data: post.id })
               }
             />
           ))}
