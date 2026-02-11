@@ -1,11 +1,11 @@
-// src/components/Cards/CommentInfoCard.jsx
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
 import toast from "react-hot-toast";
-import { LuChevronDown, LuDot, LuReply, LuTrash2 } from "react-icons/lu";
+import { LuChevronDown, LuDot, LuReply } from "react-icons/lu";
 
 import axiosInstance from "../../utils/axiosInstance";
+import { setOpenAuthForm } from "../../store/slices/authSlice";
 import { API_PATHS } from "../../utils/apiPath";
 import CommentReplyInput from "../Inputs/CommentReplyInput";
 
@@ -15,13 +15,13 @@ const CommentInfoCard = ({
   authorPhoto,
   content,
   updatedOn,
-  post,
+  post, // may be { id, _id, slug } or a post object from server
   replies,
   getAllComments,
   onDelete,
   isSubReply,
 }) => {
-  // Pull `user` from Redux instead of Context
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
 
   const [replyText, setReplyText] = useState("");
@@ -33,17 +33,31 @@ const CommentInfoCard = ({
     setShowReplyForm(false);
   };
 
+  // derive canonical post identifier (id || _id || slug)
+  const getPostIdentifier = () => {
+    if (!post) return null;
+    return post.id ?? post._id ?? post.slug ?? null;
+  };
+
   const handleAddReply = async () => {
     try {
-      await axiosInstance.post(API_PATHS.COMMENTS.ADD(post._id), {
+      const postId = getPostIdentifier();
+      if (!postId) {
+        toast.error("Unable to determine post id for reply.");
+        return;
+      }
+
+      await axiosInstance.post(API_PATHS.COMMENTS.ADD(postId), {
         content: replyText,
-        parentComment: commentId,
+        parentComment: commentId || null, // send parent comment id for replies
       });
 
       toast.success("Reply added successfully!");
       setReplyText("");
       setShowReplyForm(false);
-      getAllComments();
+      if (typeof getAllComments === "function") {
+        await getAllComments();
+      }
     } catch (error) {
       console.error("Error adding reply:", error);
       toast.error("Could not add reply. Please try again.");
@@ -51,13 +65,8 @@ const CommentInfoCard = ({
   };
 
   return (
-    <div
-      className={`bg-white w-full rounded-lg cursor-pointer p-3.5 group ${
-        isSubReply ? "mb-1" : "mb-4"
-      }`}
-    >
+    <div className="bg-white p-3 rounded-lg cursor-pointer group mb-5">
       <div className="grid grid-cols-12 gap-3">
-        {/* Main comment body */}
         <div className="col-span-12 md:col-span-8 order-2 md:order-1">
           <div className="flex items-start gap-3">
             <img
@@ -84,13 +93,19 @@ const CommentInfoCard = ({
                 {!isSubReply && (
                   <>
                     <button
-                      className="flex items-center gap-2 text-[13px] font-medium text-sky-950 bg-sky-50 px-4 py-0.5 rounded-full hover:bg-sky-500 hover:text-white cursor-pointer"
-                      onClick={() => setShowReplyForm((prev) => !prev)}
+                      className="flex items-center gap-2 text-[13px] font-medium text-sky-600 bg-sky-50 px-4 py-0.5 rounded-full hover:bg-sky-500 hover:text-white cursor-pointer"
+                      onClick={() => {
+                        if (!user) {
+                          dispatch(setOpenAuthForm(true));
+                          return;
+                        }
+                        setShowReplyForm((prev) => !prev);
+                      }}
                     >
                       <LuReply /> Reply
                     </button>
                     <button
-                      className="flex items-center gap-2 text-[13px] font-medium text-sky-950 bg-sky-50 px-4 py-0.5 rounded-full hover:bg-sky-500 hover:text-white cursor-pointer"
+                      className="flex items-center gap-2 text-[13px] font-medium text-sky-600 bg-sky-50 px-4 py-0.5 rounded-full hover:bg-sky-500 hover:text-white cursor-pointer"
                       onClick={() => setShowSubReplies((prev) => !prev)}
                     >
                       {replies?.length || 0}{" "}
@@ -101,37 +116,12 @@ const CommentInfoCard = ({
                     </button>
                   </>
                 )}
-
-                <button
-                  className="flex items-center gap-2 text-[13px] font-medium text-sky-950 bg-sky-50 px-4 py-0.5 rounded-full hover:bg-rose-500 hover:text-white cursor-pointer"
-                  onClick={() => onDelete(commentId)}
-                >
-                  <LuTrash2 /> Delete
-                </button>
               </div>
             </div>
           </div>
         </div>
-
-        {/* Post preview */}
-        {!isSubReply && (
-          <div className="col-span-12 md:col-span-4 order-1 md:order-2 flex items-center gap-4">
-            <img
-              src={post?.coverImageUrl}
-              alt="post cover"
-              crossOrigin="anonymous"
-              className="w-16 h-10 rounded-lg object-cover"
-            />
-            <div className="flex-1">
-              <h4 className="text-xs text-gray-800 font-medium">
-                {post?.title}
-              </h4>
-            </div>
-          </div>
-        )}
       </div>
 
-      {/* Reply form */}
       {!isSubReply && showReplyForm && (
         <CommentReplyInput
           user={user}
@@ -144,13 +134,15 @@ const CommentInfoCard = ({
         />
       )}
 
-      {/* Sub‑replies */}
       {showSubReplies &&
         replies?.length > 0 &&
         replies.map((reply, idx) => (
-          <div className={`ml-5 ${idx === 0 ? "mt-5" : ""}`} key={reply._id}>
+          <div
+            className={`ml-5 ${idx === 0 ? "mt-5" : ""}`}
+            key={reply._id || reply.id}
+          >
             <CommentInfoCard
-              commentId={reply._id}
+              commentId={reply._id || reply.id}
               authorName={reply.author.name}
               authorPhoto={reply.author.profileImageUrl}
               content={reply.content}
@@ -159,7 +151,7 @@ const CommentInfoCard = ({
                   ? moment(reply.updatedAt).format("Do MMM YYYY")
                   : "-"
               }
-              post={reply.post}
+              post={reply.post || post}
               replies={reply.replies || []}
               getAllComments={getAllComments}
               onDelete={onDelete}

@@ -1,3 +1,4 @@
+// src/components/Auth/Login.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -16,6 +17,7 @@ const Login = ({ setCurrentPage }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -33,6 +35,7 @@ const Login = ({ setCurrentPage }) => {
     }
 
     setError(null);
+    setIsLoading(true);
 
     try {
       const response = await axiosInstance.post(API_PATHS.AUTH.LOGIN, {
@@ -51,15 +54,18 @@ const Login = ({ setCurrentPage }) => {
 
         // Navigate based on role
         if (role === "admin") {
-          return navigate("/admin/dashboard");
+          navigate("/admin/dashboard");
+          return;
         }
-        return; // stays on current page for non‑admin
+        // remain on current page for non-admin users
       }
     } catch (err) {
       const msg =
         err.response?.data?.message ||
         "Something went wrong. Please try again later";
       setError(msg);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -67,7 +73,7 @@ const Login = ({ setCurrentPage }) => {
     <div className="flex items-center">
       <div className="w-[90vw] md:w-[33vw] p-7 flex flex-col justify-center">
         <h3 className="text-lg font-semibold text-black">Welcome Back</h3>
-        <p className="text-xs text-slate-700 mt-[2px] mb-6">
+        <p className="text-xs text-slate-700 mt-0.5 mb-6">
           Please enter your details to log in
         </p>
 
@@ -90,8 +96,13 @@ const Login = ({ setCurrentPage }) => {
 
           {error && <p className="text-red-500 text-xs pb-2.5">{error}</p>}
 
-          <button type="submit" className="btn-primary">
-            Log In
+          <button
+            type="submit"
+            className="btn-primary"
+            disabled={isLoading}
+            aria-busy={isLoading}
+          >
+            {isLoading ? "Logging in..." : "Log In"}
           </button>
 
           <p className="text-[13px] text-slate-800 mt-3">
@@ -99,7 +110,7 @@ const Login = ({ setCurrentPage }) => {
             <button
               type="button"
               onClick={() => setCurrentPage("signup")}
-              className="font-medium text-[16px] text-priamry underline cursor-pointer"
+              className="font-medium text-[16px] text-primary underline cursor-pointer"
             >
               Sign Up
             </button>
@@ -108,7 +119,7 @@ const Login = ({ setCurrentPage }) => {
       </div>
 
       <div className="hidden md:block">
-        <img src={AUTH_IMG} alt="login" className="h-[400px] w-[470px]" />
+        <img src={AUTH_IMG} alt="login" className="h-100 w-117.5" />
       </div>
     </div>
   );

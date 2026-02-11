@@ -7,6 +7,7 @@ import {
   LuLayoutTemplate,
   LuTag,
   LuUser,
+  LuCrown,
 } from "react-icons/lu";
 
 export const SIDE_MENU_DATA = [
@@ -77,7 +78,7 @@ export const BLOG_NAVBAR_DATA = [
   {
     id: "06",
     label: "Awardees",
-    icon: LuTag,
+    icon: LuCrown,
     path: "/tag/Awardees",
   },
 ];

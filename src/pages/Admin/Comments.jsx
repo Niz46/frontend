@@ -1,4 +1,3 @@
-// import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../components/layouts/DashboardLayout";
 import { useEffect, useState } from "react";
 import moment from "moment";
@@ -10,7 +9,6 @@ import Modal from "../../components/Modal";
 import DeleteAlertContent from "../../components/DeleteAlertContent";
 
 const Comments = () => {
-  // const navigate = useNavigate();
   const [comments, setComments] = useState([]);
 
   const [openDeleteAlert, setOpenDeleteAlert] = useState({
@@ -30,15 +28,16 @@ const Comments = () => {
   const deleteComment = async (commentId) => {
     try {
       await axiosInstance.delete(API_PATHS.COMMENTS.DELETE(commentId));
-
-      toast.success("Comment Deleted Sucessfull");
+      toast.success("Comment Deleted Successfully");
       setOpenDeleteAlert({
         open: false,
         data: null,
       });
-      getAllComments;
+      // actually invoke refresh
+      await getAllComments();
     } catch (error) {
       console.error("Error deleting blog comment:", error);
+      toast.error("Failed to delete comment");
     }
   };
 
@@ -48,13 +47,13 @@ const Comments = () => {
   }, []);
   return (
     <DashboardLayout activeMenu="Comments">
-      <div className="w-auto sm:max-w-[900px] mx-auto">
+      <div className="w-auto sm:max-w-225 mx-auto">
         <h2 className="text-2xl font-semibold mt-5 mb-5">Comments</h2>
 
         {comments.map((comment) => (
           <CommentInfoCard
-            key={comment._id}
-            commentId={comment._id || null}
+            key={comment._id || comment.id}
+            commentId={comment._id || comment.id}
             authorName={comment.author.name}
             authorPhoto={comment.author.profileImageUrl}
             content={comment.content}

@@ -1,3 +1,4 @@
+// src/pages/Blog/components/LikeCommentButton.jsx
 import { useEffect, useState } from "react";
 import { PiHeart } from "react-icons/pi";
 import { LuMessageCircleDashed } from "react-icons/lu";
@@ -13,33 +14,48 @@ const LikeCommentButton = ({
 }) => {
   const [postLikes, setPostLikes] = useState(initialLikes);
   const [hasLiked, setHasLiked] = useState(false);
-  const [likeStatusLoaded, setLikeStatusLoaded] = useState(false); // 👈
+  const [likeStatusLoaded, setLikeStatusLoaded] = useState(false);
 
-  // Fetch hasLiked status
+  // Fetch hasLiked status and canonical likes value
   useEffect(() => {
-    if (!postSlug) return;
+    if (!postSlug && !postId) {
+      setLikeStatusLoaded(true);
+      return;
+    }
 
     (async () => {
       try {
-        const { data } = await axiosInstance.get(
-          API_PATHS.POSTS.GET_BY_SLUG(postSlug)
-        );
-        setHasLiked(Boolean(data.hasLiked));
+        const ref = postSlug
+          ? API_PATHS.POSTS.GET_BY_SLUG(postSlug)
+          : API_PATHS.POSTS.UPDATE(postId); // fallback
+        const { data } = await axiosInstance.get(ref);
+        // backend may return likesCount; accept both keys
+        const likesFromServer =
+          data.likes ?? data.likesCount ?? data.likesCount;
+        if (typeof likesFromServer === "number") {
+          setPostLikes(likesFromServer);
+        }
+        // backend may include `hasLiked` boolean
+        if (typeof data.hasLiked === "boolean") {
+          setHasLiked(Boolean(data.hasLiked));
+        }
       } catch (err) {
         console.error("Could not fetch like status:", err);
       } finally {
-        setLikeStatusLoaded(true); // 👈 mark as loaded
+        setLikeStatusLoaded(true);
       }
     })();
-  }, [postSlug]);
+  }, [postSlug, postId]);
 
   const handleLikeClick = async () => {
     if (hasLiked || !postId) return;
 
     try {
       const { data } = await axiosInstance.post(API_PATHS.POSTS.LIKE(postId));
-      setPostLikes(data.likes ?? postLikes);
-      if (data.message === "Like added") {
+      // Accept either 'likes' or 'likesCount'
+      const newLikes = data.likes ?? data.likesCount ?? data.likes ?? postLikes;
+      setPostLikes(typeof newLikes === "number" ? newLikes : postLikes);
+      if (data.message === "Like added" || data.hasLiked) {
         setHasLiked(true);
       }
     } catch (error) {
@@ -60,7 +76,7 @@ const LikeCommentButton = ({
         <PiHeart
           className={clsx(
             "text-[22px] transition-transform duration-300",
-            hasLiked ? "scale-125 text-pink-500" : "hover:text-cyan-500"
+            hasLiked ? "scale-125 text-pink-500" : "hover:text-cyan-500",
           )}
         />
         <span className="text-base font-medium">{postLikes}</span>

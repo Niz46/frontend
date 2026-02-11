@@ -71,9 +71,14 @@ const BlogPostViews = () => {
         const { data } = await axiosInstance.get(
           API_PATHS.POSTS.GET_BY_SLUG(slug),
         );
+
+        // Normalize a single identifier for use in all subsequent calls.
+        const postIdentifier = data.id ?? data._id ?? data.slug;
         setBlogPostData(data);
+
+        // Fetch comments using the resolved identifier (id or slug)
         const commentsRes = await axiosInstance.get(
-          API_PATHS.COMMENTS.GET_ALL_BY_POST(data._id),
+          API_PATHS.COMMENTS.GET_ALL_BY_POST(postIdentifier),
         );
         setComments(commentsRes.data);
       } catch (err) {
@@ -83,10 +88,14 @@ const BlogPostViews = () => {
     fetchData();
   }, [slug, user, navigate]);
 
+  // Determine single normalized id/slug to pass to API calls and children
+  const normalizedPostId =
+    blogPostData?.id ?? blogPostData?._id ?? blogPostData?.slug ?? null;
+
   // use `id` (fallback to slug if id missing) and validate before sending
   useEffect(() => {
     if (!blogPostData || !user) return;
-    const postId = blogPostData.id ?? blogPostData._id ?? blogPostData.slug;
+    const postId = normalizedPostId;
     if (!postId) {
       console.warn(
         "Cannot increment view: missing post id or slug",
@@ -104,21 +113,21 @@ const BlogPostViews = () => {
       .catch((err) => {
         console.error("Failed to increment view:", err);
       });
-  }, [blogPostData, user]);
+  }, [blogPostData, user, normalizedPostId]);
 
-  // 3) Add comment handler
+  // 3) Add comment handler (top-level)
   const handleAddReply = async () => {
     if (!replyText.trim()) return;
     try {
-      await axiosInstance.post(API_PATHS.COMMENTS.ADD(blogPostData._id), {
+      await axiosInstance.post(API_PATHS.COMMENTS.ADD(normalizedPostId), {
         content: replyText,
-        parentComment: "",
+        parentComment: null, // send null for top-level comments
       });
       toast.success("Comment added successfully");
       setReplyText("");
       setShowReplyForm(false);
       const commentsRes = await axiosInstance.get(
-        API_PATHS.COMMENTS.GET_ALL_BY_POST(blogPostData._id),
+        API_PATHS.COMMENTS.GET_ALL_BY_POST(normalizedPostId),
       );
       setComments(commentsRes.data);
     } catch (err) {
@@ -311,16 +320,22 @@ const BlogPostViews = () => {
 
             {comments.map((comment) => (
               <CommentInfoCard
-                key={comment._id}
-                commentId={comment._id}
+                key={comment._id || comment.id}
+                commentId={comment._id || comment.id}
                 authorName={comment.author.name}
                 authorPhoto={comment.author.profileImageUrl}
                 content={comment.content}
                 updatedOn={moment(comment.updatedAt).format("Do MMM YYYY")}
+                // pass canonical post identity to child components
+                post={{
+                  id: normalizedPostId,
+                  _id: normalizedPostId,
+                  slug: blogPostData.slug,
+                }}
                 replies={comment.replies || []}
                 getAllComments={async () => {
                   const res = await axiosInstance.get(
-                    API_PATHS.COMMENTS.GET_ALL_BY_POST(blogPostData._id),
+                    API_PATHS.COMMENTS.GET_ALL_BY_POST(normalizedPostId),
                   );
                   setComments(res.data);
                 }}
@@ -330,8 +345,8 @@ const BlogPostViews = () => {
 
           <LikeCommentButton
             postSlug={blogPostData.slug}
-            postId={blogPostData._id}
-            initialLikes={blogPostData.likes}
+            postId={normalizedPostId}
+            initialLikes={blogPostData.likesCount ?? 0} // use likesCount from backend
             initialComments={comments.length}
           />
 

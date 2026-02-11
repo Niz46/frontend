@@ -41,8 +41,8 @@ const BlogNavbar = ({ activeMenu }) => {
             </button>
 
             <Link to="/" className="flex items-center justify-center gap-2">
-              <img src={Logo} alt="logo" className="h-[24px] md:h-[36px]" />
-              <span className="font-poppins font-extrabold text-[24px] md:text-4xl uppercase tracking-wider inline-block bg-gradient-to-r from-cyan-400 via-sky-500 to-indigo-600 bg-clip-text text-transparent drop-shadow-[0_4px_10px_rgba(0,0,0,0.25)] transform -skew-y-2">
+              <img src={Logo} alt="logo" className="h-6 md:h-9" />
+              <span className="font-poppins font-extrabold text-[24px] md:text-4xl uppercase tracking-wider inline-block bg-linear-to-r from-cyan-400 via-sky-500 to-indigo-600 bg-clip-text text-transparent drop-shadow-[0_4px_10px_rgba(0,0,0,0.25)] transform -skew-y-2">
                 UAACAI
               </span>
             </Link>
@@ -58,7 +58,7 @@ const BlogNavbar = ({ activeMenu }) => {
                   <li className="text-[15px] text-black font-medium list-none relative group cursor-pointer">
                     {item.label}
                     <span
-                      className={`absolute inset-x-0 bottom-0 h-[2px] bg-sky-500 transition-all duration-300 origin-left ${
+                      className={`absolute inset-x-0 bottom-0 h-0.5 bg-sky-500 transition-all duration-300 origin-left ${
                         isActive ? "scale-x-100" : "scale-x-0"
                       } group-hover:scale-x-100`}
                     />
@@ -91,7 +91,7 @@ const BlogNavbar = ({ activeMenu }) => {
           </div>
 
           {openSideMenu && (
-            <div className="fixed top-[61px] -ml-4 bg-white">
+            <div className="fixed top-15.25 -ml-4 bg-white">
               <SideMenu
                 activeMenu={activeMenu}
                 isBlogMenu
