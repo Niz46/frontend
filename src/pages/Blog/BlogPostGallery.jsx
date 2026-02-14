@@ -6,7 +6,7 @@ import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import { toast } from "react-hot-toast";
 
-import { fetchPosts } from "../../store/slices/blogSlice";
+import { fetchPosts, fetchPostsByTag } from "../../store/slices/blogSlice";
 import uploadImagesPublic from "../../utils/uploadImage";
 import BlogLayout from "../../components/layouts/BlogLayout/BlogLayout";
 import Loading from "../../components/Loader/Loading";
@@ -18,48 +18,97 @@ const normalizeTag = (t) => (typeof t === "string" ? t : t?.name || "").trim();
 
 const isUserAuthorized = (user) => {
   if (!user) return false;
-  if (user.isAdmin) return true;
 
-  // roles: array of strings
+  // 1) explicit boolean flags (many backends use different names)
+  if (user.isAdmin || user.is_admin || user.admin || user.isAdministrator)
+    return true;
+  // 2) role as a string property
+  if (
+    typeof user.role === "string" &&
+    ["admin", "uploader", "editor"].includes(user.role.toLowerCase())
+  )
+    return true;
+
+  // 3) roles: array which may contain strings or objects ({name: 'admin'})
   if (Array.isArray(user.roles)) {
-    if (
-      user.roles.some((r) =>
-        ["admin", "uploader", "editor"].includes(String(r).toLowerCase()),
-      )
-    )
-      return true;
+    const found = user.roles.some((r) => {
+      if (!r) return false;
+      if (typeof r === "string")
+        return ["admin", "uploader", "editor"].includes(r.toLowerCase());
+      if (typeof r === "object" && r.name)
+        return ["admin", "uploader", "editor"].includes(
+          String(r.name).toLowerCase(),
+        );
+      // fallback stringify
+      return ["admin", "uploader", "editor"].includes(String(r).toLowerCase());
+    });
+    if (found) return true;
   }
 
-  // permissions: array of strings
+  // 4) permissions: array of strings or objects { name: 'upload:image' }
   if (Array.isArray(user.permissions)) {
-    if (
-      user.permissions.includes("upload:image") ||
-      user.permissions.includes("upload:images")
-    )
-      return true;
+    const hasUploadPerm = user.permissions.some((p) => {
+      if (!p) return false;
+      if (typeof p === "string")
+        return ["upload:image", "upload:images"].includes(p);
+      if (typeof p === "object" && p.name)
+        return ["upload:image", "upload:images"].includes(String(p.name));
+      return false;
+    });
+    if (hasUploadPerm) return true;
   }
 
-  // email domain (example) - change domain to your real domain if you have one
+  // 5) email domain (example) - keep as fallback
   if (typeof user.email === "string" && /@uaacaii/i.test(user.email))
     return true;
 
-  // historic fallback (kept for backwards compatibility)
+  // 6) historic fallback - username suffix
   if (typeof user.name === "string" && /uaacaii$/i.test(user.name)) return true;
 
   return false;
 };
 
-const GallerySection = ({ title, photos = [], onImageClick }) => {
+const GallerySection = ({
+  title,
+  photos = [],
+  onImageClick,
+  loadMore,
+  loadingMore,
+  moreAvailable,
+}) => {
   return (
-    <section aria-labelledby={`gallery-${title}`}>
-      <h3 id={`gallery-${title}`} className="text-xl font-semibold mb-4">
-        {title} ({photos.length})
-      </h3>
+    <section aria-labelledby={`gallery-${title}`} className="mb-8">
+      <div className="flex items-center justify-between mb-4">
+        <h3 id={`gallery-${title}`} className="text-xl font-semibold">
+          {title} ({photos.length})
+        </h3>
+        {loadMore && (
+          <div>
+            <button
+              onClick={loadMore}
+              disabled={loadingMore || !moreAvailable}
+              className={`px-3 py-1 rounded text-sm border ${
+                loadingMore
+                  ? "bg-gray-200 cursor-wait"
+                  : moreAvailable
+                    ? "bg-white hover:bg-gray-50"
+                    : "bg-gray-100 cursor-not-allowed"
+              }`}
+            >
+              {loadingMore
+                ? "Loading…"
+                : moreAvailable
+                  ? "Load more"
+                  : "No more"}
+            </button>
+          </div>
+        )}
+      </div>
 
       {photos.length === 0 ? (
-        <p className="text-sm text-gray-500 mb-6">No images in this section.</p>
+        <p className="text-sm text-gray-500">No images in this section.</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {photos.map((photo, idx) => (
             <div
               key={`${photo.src}-${idx}`}
@@ -96,6 +145,7 @@ const BlogPostGallery = () => {
   const dispatch = useDispatch();
   const posts = useSelector((state) => state.blog.posts);
   const status = useSelector((state) => state.blog.status);
+  const tagPages = useSelector((state) => state.blog.tagPages || {});
   const user = useSelector((state) => state.auth.user);
 
   // Photo buckets keyed by section name
@@ -116,19 +166,64 @@ const BlogPostGallery = () => {
 
   const authorized = useMemo(() => isUserAuthorized(user), [user]);
 
-  // Fetch posts on mount if idle
+  // Tag-loading indicator local state (per tag)
+  const [loadingTag, setLoadingTag] = useState({}); // e.g. { Journals: false }
+
+  // Fetch global posts on mount if idle (keeps 'Other' section populated)
   useEffect(() => {
     if (status === "idle") {
       dispatch(fetchPosts({ status: "published", page: 1 }));
     }
   }, [dispatch, status]);
 
-  // Build sectioned photo lists whenever posts or saved uploads change
-  useEffect(() => {
-    if (status !== "succeeded") return;
+  /**
+   * Fetch one page for a primary tag.
+   * - If tag cache missing, fetch page 1.
+   * - If fetching more, increment page number.
+   */
+  const loadTagPage = useCallback(
+    async (tag) => {
+      try {
+        const tagKey = String(tag);
+        const current = tagPages[tagKey] || { page: 0, totalPages: 1 };
 
-    // 1) From posts -> map into a flat array of { src, title, author, tags[] }
-    const postImages = posts.flatMap((post) => {
+        // determine next page
+        const nextPage = Math.min(
+          (current.page || 0) + 1,
+          Math.max(1, current.totalPages || 1),
+        );
+
+        // if we've already reached last page, bail
+        if (current.page && current.page >= (current.totalPages || 1)) return;
+
+        setLoadingTag((prev) => ({ ...prev, [tagKey]: true }));
+        // dispatch thunk
+        await dispatch(
+          fetchPostsByTag({ tag: tagKey, status: "published", page: nextPage }),
+        ).unwrap();
+      } catch (err) {
+        console.error("[loadTagPage]", err);
+        toast.error((err && err.message) || "Failed to load more images");
+      } finally {
+        setLoadingTag((prev) => ({ ...prev, [tag]: false }));
+      }
+    },
+    [dispatch, tagPages],
+  );
+
+  // Build sectioned photo lists whenever posts, tagPages or saved uploads change
+  useEffect(() => {
+    // 1) For primary tags, prefer tagPages cache if present, otherwise fall back to scanning global posts
+    const buckets = {
+      Journals: [],
+      Events: [],
+      Awardees: [],
+      Other: [],
+      Saved: [],
+    };
+
+    // helper to map post -> images
+    const postToImages = (post) => {
       const tags = Array.isArray(post.tags)
         ? post.tags.map(normalizeTag).filter(Boolean)
         : post.tag
@@ -136,7 +231,6 @@ const BlogPostGallery = () => {
           : [];
 
       const authorName = post.author?.name || "Unknown";
-
       const images = (post.coverImageUrl || []).map((url) => ({
         src: url,
         title: post.title || "Untitled",
@@ -144,17 +238,50 @@ const BlogPostGallery = () => {
         tags,
         postId: post.id,
       }));
-
       return images;
+    };
+
+    // use tagPages for primary tags
+    for (const tag of PRIMARY_TAGS) {
+      const cache = tagPages[tag];
+      if (cache && Array.isArray(cache.posts) && cache.posts.length > 0) {
+        // map each post -> images
+        const imgs = cache.posts.flatMap((p) => postToImages(p));
+        buckets[tag] = imgs;
+      } else {
+        // fallback: scan global posts and pick matching posts
+        const matched = posts.flatMap((post) => {
+          const tags = Array.isArray(post.tags)
+            ? post.tags.map(normalizeTag).filter(Boolean)
+            : post.tag
+              ? [normalizeTag(post.tag)]
+              : [];
+          const matchedTag = tags.find(
+            (t) => t && t.toLowerCase() === tag.toLowerCase(),
+          );
+          if (matchedTag) return postToImages(post);
+          return [];
+        });
+        buckets[tag] = matched;
+      }
+    }
+
+    // Other: any images that didn't match a PRIMARY_TAG (from global posts)
+    const allPostImages = posts.flatMap(postToImages);
+    const primaryLower = PRIMARY_TAGS.map((p) => p.toLowerCase());
+    buckets.Other = allPostImages.filter((img) => {
+      const hasPrimary = (img.tags || []).some((t) =>
+        primaryLower.includes(t.toLowerCase()),
+      );
+      return !hasPrimary;
     });
 
-    // 2) Read saved uploads from localStorage (dedupe)
+    // Saved from localStorage
     const savedUrls = (() => {
       try {
         const raw = localStorage.getItem(LOCAL_STORAGE_KEY) || "[]";
         const arr = JSON.parse(raw);
         if (!Array.isArray(arr)) return [];
-        // filter non-strings
         return arr.filter((u) => typeof u === "string");
       } catch {
         return [];
@@ -167,33 +294,10 @@ const BlogPostGallery = () => {
       author: "Uaacaii",
       tags: [],
     }));
-
-    // 3) Partition into sections
-    const buckets = {
-      Journals: [],
-      Events: [],
-      Awardees: [],
-      Other: [],
-      Saved: savedPhotos,
-    };
-
-    for (const img of postImages) {
-      const matchedTag = (img.tags || []).find((t) =>
-        PRIMARY_TAGS.some((p) => p.toLowerCase() === t.toLowerCase()),
-      );
-
-      if (matchedTag) {
-        const proper = PRIMARY_TAGS.find(
-          (p) => p.toLowerCase() === matchedTag.toLowerCase(),
-        );
-        buckets[proper].push(img);
-      } else {
-        buckets.Other.push(img);
-      }
-    }
+    buckets.Saved = savedPhotos;
 
     setSections(buckets);
-  }, [posts, status]);
+  }, [posts, tagPages]);
 
   // Upload handler
   const onDrop = useCallback(
@@ -322,15 +426,24 @@ const BlogPostGallery = () => {
           <Loading />
         ) : (
           <div>
-            {/* Render each primary section in order */}
-            {PRIMARY_TAGS.map((tag) => (
-              <GallerySection
-                key={tag}
-                title={tag}
-                photos={sections[tag] || []}
-                onImageClick={(idx) => openSectionSlideshow(tag, idx)}
-              />
-            ))}
+            {/* Render each primary section in order (uses tag cache + Load more) */}
+            {PRIMARY_TAGS.map((tag) => {
+              const photos = sections[tag] || [];
+              const cache = tagPages[tag] || {};
+              const moreAvailable = (cache.page || 0) < (cache.totalPages || 1);
+              const loadingMore = !!loadingTag[tag];
+              return (
+                <GallerySection
+                  key={tag}
+                  title={tag}
+                  photos={photos}
+                  onImageClick={(idx) => openSectionSlideshow(tag, idx)}
+                  loadMore={() => loadTagPage(tag)}
+                  loadingMore={loadingMore}
+                  moreAvailable={moreAvailable}
+                />
+              );
+            })}
 
             {/* Other */}
             <GallerySection

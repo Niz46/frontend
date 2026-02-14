@@ -3,7 +3,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATHS } from "../../utils/apiPath";
 
-// Async thunk to fetch posts
+// Async thunk to fetch posts (global)
 export const fetchPosts = createAsyncThunk(
   "blog/fetchPosts",
   async ({ status = "published", page = 1 }) => {
@@ -11,7 +11,24 @@ export const fetchPosts = createAsyncThunk(
       params: { status, page },
     });
     return response.data;
-  }
+  },
+);
+
+// NEW: Async thunk to fetch posts by tag (paginated)
+export const fetchPostsByTag = createAsyncThunk(
+  "blog/fetchPostsByTag",
+  async ({ tag, status = "published", page = 1 }) => {
+    // Backend expects tag in the path - GET_BY_TAG returns { posts, page, totalPages, totalCount }
+    const path =
+      typeof API_PATHS.POSTS.GET_BY_TAG === "function"
+        ? API_PATHS.POSTS.GET_BY_TAG(tag)
+        : `/api/posts/tag/${tag}`;
+
+    const response = await axiosInstance.get(path, {
+      params: { status, page },
+    });
+    return { tag, ...response.data };
+  },
 );
 
 const blogSlice = createSlice({
@@ -24,6 +41,12 @@ const blogSlice = createSlice({
     status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
     error: null,
     pageSizes: [], // <-- track how many posts came back for each page
+
+    // NEW: tag-specific caches to support pagination per tag
+    tagPages: {
+      // example shape:
+      // Journals: { posts: [], page: 1, totalPages: 1, totalCount: 0, status: 'idle' }
+    },
   },
   reducers: {
     resetBlogState: (state) => {
@@ -34,10 +57,10 @@ const blogSlice = createSlice({
       state.status = "idle";
       state.error = null;
       state.pageSizes = [];
+      state.tagPages = {};
     },
     removeLastPage: (state) => {
       if (state.page > 1) {
-        // drop the last N posts that were loaded
         const lastSize = state.pageSizes.pop() || 0;
         state.posts = state.posts.slice(0, state.posts.length - lastSize);
         state.page -= 1;
@@ -46,6 +69,7 @@ const blogSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // global fetch
       .addCase(fetchPosts.pending, (state) => {
         state.status = "loading";
       })
@@ -67,6 +91,68 @@ const blogSlice = createSlice({
       .addCase(fetchPosts.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
+      })
+
+      // tag-specific fetch lifecycle
+      .addCase(fetchPostsByTag.pending, (state, action) => {
+        const tag = action.meta.arg.tag;
+        if (!state.tagPages[tag]) {
+          state.tagPages[tag] = {
+            posts: [],
+            page: 1,
+            totalPages: 1,
+            totalCount: 0,
+            status: "loading",
+            error: null,
+          };
+        } else {
+          state.tagPages[tag].status = "loading";
+          state.tagPages[tag].error = null;
+        }
+      })
+      .addCase(fetchPostsByTag.fulfilled, (state, action) => {
+        const {
+          tag,
+          posts = [],
+          page = 1,
+          totalPages = 1,
+          totalCount = 0,
+        } = action.payload;
+        const current = state.tagPages[tag] || {
+          posts: [],
+          page: 1,
+          totalPages: 1,
+          totalCount: 0,
+        };
+
+        current.status = "succeeded";
+        current.totalPages = totalPages;
+        current.totalCount = totalCount;
+        current.page = page;
+
+        if (page === 1) {
+          current.posts = posts;
+        } else {
+          current.posts = (current.posts || []).concat(posts);
+        }
+
+        state.tagPages[tag] = current;
+      })
+      .addCase(fetchPostsByTag.rejected, (state, action) => {
+        const tag = action.meta.arg.tag;
+        if (!state.tagPages[tag])
+          state.tagPages[tag] = {
+            posts: [],
+            page: 1,
+            totalPages: 1,
+            totalCount: 0,
+            status: "failed",
+            error: action.error.message,
+          };
+        else {
+          state.tagPages[tag].status = "failed";
+          state.tagPages[tag].error = action.error.message;
+        }
       });
   },
 });
