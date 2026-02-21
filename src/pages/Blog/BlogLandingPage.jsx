@@ -1,137 +1,54 @@
-// src/pages/BlogLandingPage.jsx
-import { useEffect } from "react";
+// src/pages/Blog/BlogLandingPage.jsx
 import { useNavigate } from "react-router-dom";
-import moment from "moment";
-import { LuGalleryHorizontalEnd, LuLoaderCircle } from "react-icons/lu";
-
 import BlogLayout from "../../components/layouts/BlogLayout/BlogLayout";
-import FeaturedBlogPost from "./components/FeaturedBlogPost";
-import BlogPostSummaryCard from "./components/BlogPostSummaryCard";
-import TrendingPostsSection from "./components/TrendingPostsSection";
-
-import { useSelector, useDispatch } from "react-redux";
-import { fetchPosts, removeLastPage } from "../../store/slices/blogSlice";
 
 const BlogLandingPage = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
-  // Pull state from Redux
-  const posts = useSelector((state) => state.blog.posts);
-  const page = useSelector((state) => state.blog.page);
-  const totalPages = useSelector((state) => state.blog.totalPages);
-  const status = useSelector((state) => state.blog.status);
-  const error = useSelector((state) => state.blog.error);
-
-  // On mount, fetch first page if idle
-  useEffect(() => {
-    if (status === "idle") {
-      dispatch(fetchPosts({ status: "published", page: 1 }));
-    }
-  }, [dispatch, status]);
-
-  const sortedByCreation = [...posts].sort((a, b) => {
-    // Parse the ISO string out of the $date wrapper:
-    const dateA = new Date(a.createdAt); // backend now sends ISO strings
-    const dateB = new Date(b.createdAt);
-    // Subtract so that the later date (newer post) comes first:
-    return dateB - dateA;
-  });
-
-  const handleLoadMore = () => {
-    if (page < totalPages && status !== "loading") {
-      dispatch(fetchPosts({ status: "published", page: page + 1 }));
-    }
+  const handleExplore = () => {
+    navigate("/tag/Journals");
   };
 
-  const handleShowLess = () => {
-    if (page > 1) {
-      dispatch(removeLastPage());
-    }
-  };
-
-  const handleClick = (post) => {
-    navigate(`/${post.slug}`);
+  const handleContact = () => {
+    navigate("/about");
   };
 
   return (
     <BlogLayout activeMenu="Home">
-      <div className="grid grid-cols-12 gap-5">
-        <div className="col-span-12 md:col-span-9">
-          {/* Featured */}
-          {sortedByCreation.length > 0 && (
-            <FeaturedBlogPost
-              title={sortedByCreation[0].title}
-              coverImageUrl={sortedByCreation[0].coverImageUrl}
-              description={sortedByCreation[0].content}
-              tags={sortedByCreation[0].tags}
-              updatedOn={moment(sortedByCreation[0].createdAt).format(
-                "Do MMM YYYY"
-              )}
-              authorName={sortedByCreation[0].author.name}
-              authorProfileImg={sortedByCreation[0].author.profileImageUrl}
-              onClick={() => handleClick(sortedByCreation[0])}
-            />
-          )}
-
-          {/* Summary Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-            {sortedByCreation.slice(1).map((post) => (
-              <BlogPostSummaryCard
-                key={post._id}
-                title={post.title}
-                coverImageUrl={post.coverImageUrl}
-                description={post.content}
-                tags={post.tags}
-                updatedOn={moment(post.createdAt.$date).format("Do MMM YYYY")}
-                authorName={post.author.name}
-                authorProfileImg={post.author.profileImageUrl}
-                onClick={() => handleClick(post)}
+      <main className="relative w-full min-h-[calc(100vh-72px)] flex items-center justify-center bg-hero-gradient overflow-hidden">
+        <div className="absolute -left-20 -top-16 w-56 h-56 rounded-full opacity-30 blob-1" />
+        <div className="absolute -right-24 bottom-8 w-72 h-72 rounded-full opacity-24 blob-2" />
+        <section className="relative z-10 flex flex-col items-center gap-6 px-6 text-center">
+          <div className="perspective-1200 pointer-events-none">
+            <div className="logo-3d-wrapper">
+              <img
+                src="/UAACAII LOGO.png"
+                alt="UAACAII logo"
+                className="logo-3d object-contain select-none"
+                draggable={false}
               />
-            ))}
+            </div>
           </div>
 
-          {/* Load More */}
-          {page < totalPages && (
-            <div className="flex items-center justify-center mt-5">
-              <button
-                className="flex items-center gap-3 text-sm text-white font-medium bg-black px-7 py-2.5 rounded-full hover:scale-105 transition-all cursor-pointer"
-                disabled={status === "loading"}
-                onClick={handleLoadMore}
-              >
-                {status === "loading" ? (
-                  <LuLoaderCircle className="animate-spin text-[15px]" />
-                ) : (
-                  <LuGalleryHorizontalEnd className="text-lg" />
-                )}
-                {status === "loading" ? "Loading..." : "Load More"}
-              </button>
-            </div>
-          )}
+          <div className="flex flex-wrap gap-4 justify-center mt-2">
+            <button
+              onClick={handleExplore}
+              className="btn-primary px-8 py-3 rounded-full shadow-xl transform transition-transform hover:scale-105"
+            >
+              Explore Journal
+            </button>
 
-          {/* Show Less */}
-          {page > 1 && (
-            <div className="flex items-center justify-center mt-5">
-              <button
-                className="flex items-center gap-3 text-sm text-gray-800 font-medium bg-gray-200 px-6 py-2.5 rounded-full hover:bg-gray-300 transition-all cursor-pointer"
-                onClick={handleShowLess}
-              >
-                <LuGalleryHorizontalEnd className="text-lg rotate-180" />
-                Show Less
-              </button>
-            </div>
-          )}
+            <button
+              onClick={handleContact}
+              className="btn-secondary px-7 py-3 rounded-full border border-sky-200 bg-white/90 text-sky-700 shadow-sm transform transition-transform hover:scale-105"
+            >
+              Contact
+            </button>
+          </div>
+        </section>
 
-          {/* Error */}
-          {status === "failed" && (
-            <p className="text-center text-red-500 mt-4">{error}</p>
-          )}
-        </div>
-        {/* Sidebar */}
-        <div className="mt-10 col-span-12 md:col-span-3">
-          <TrendingPostsSection />
-        </div>
-      </div>
+        <div className="absolute inset-0 pointer-events-none bg-vignette" />
+      </main>
     </BlogLayout>
   );
 };

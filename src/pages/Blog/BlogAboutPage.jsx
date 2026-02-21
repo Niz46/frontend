@@ -169,16 +169,16 @@ const AboutPage = () => {
       <main className="about-container max-w-7xl mx-auto px-6 py-6">
         {/* Hero */}
         <header className="text-center">
-          <div className="inline-flex flex-col sm:flex-row items-center gap-6 bg-gradient-to-r from-sky-50 to-white/60 px-6 py-6 rounded-xl shadow-lg">
+          <div className="inline-flex flex-col sm:flex-row items-center gap-6 bg-linear-to-r from-sky-50 to-white/60 px-6 py-6 rounded-xl shadow-lg">
             <img
               src={Logo}
               alt="UAACAI Logo"
-              className="flex-none w-40 sm:w-52 md:w-64 lg:w-[450px] max-w-full h-auto object-contain drop-shadow-2xl"
+              className="flex-none w-40 sm:w-52 md:w-64 lg:w-112.5 max-w-full h-auto object-contain drop-shadow-2xl"
             />
 
             {/* text column: allow shrinking with min-w-0 and take remaining space with flex-1 */}
             <div className="text-left flex-1 min-w-0">
-              <h1 className="text-lg sm:text-2xl md:text-4xl font-extrabold leading-tight break-words">
+              <h1 className="text-lg sm:text-2xl md:text-4xl font-extrabold leading-tight wrap-break-word">
                 United Action Against Corruption &amp; Injustice (UAACAI)
                 International
               </h1>

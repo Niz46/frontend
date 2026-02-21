@@ -66,7 +66,7 @@ const BlogPostEditor = ({ isEdit }) => {
         {
           topics:
             "Journal Events, Human Rights, Lawyers and Groups, An integrated Strategy for Fighting Corruption and Injustice Face-to-Face international",
-        }
+        },
       );
       const generatedIdeas = aiResponse.data;
 
@@ -159,15 +159,15 @@ const BlogPostEditor = ({ isEdit }) => {
       const response = isEdit
         ? await axiosInstance.put(
             API_PATHS.POSTS.UPDATE(postData.id),
-            reqPayload
+            reqPayload,
           )
         : await axiosInstance.post(API_PATHS.POSTS.CREATE, reqPayload);
 
       if (response.data) {
         toast.success(
           getToastMessageByType(
-            isDraft ? "draft" : isEdit ? "edit" : "published"
-          )
+            isDraft ? "draft" : isEdit ? "edit" : "published",
+          ),
         );
         navigate("/admin/posts");
       }
@@ -182,7 +182,7 @@ const BlogPostEditor = ({ isEdit }) => {
   const fetchPostDetailsBySlug = async () => {
     try {
       const response = await axiosInstance.get(
-        API_PATHS.POSTS.GET_BY_SLUG(postSlug)
+        API_PATHS.POSTS.GET_BY_SLUG(postSlug),
       );
       if (response.data) {
         const data = response.data;
@@ -239,7 +239,7 @@ const BlogPostEditor = ({ isEdit }) => {
               <div className="flex items-center gap-3">
                 {isEdit && (
                   <button
-                    className="flex items-center gap-2.5 text-[13px] font-medium text-rose-500 bg-rose-50/60 rounded px-1.5 md:px-3 py-1 md:py-[3px] border border-rose-50 hover:border-rose-300 cursor-pointer hover:scale-[1.02] transition-all"
+                    className="flex items-center gap-2.5 text-[13px] font-medium text-rose-500 bg-rose-50/60 rounded px-1.5 md:px-3 py-1 md:py-0.75 border border-rose-50 hover:border-rose-300 cursor-pointer hover:scale-[1.02] transition-all"
                     disabled={loading}
                     onClick={() => setOpenDeleteAlert(true)}
                   >
@@ -249,7 +249,7 @@ const BlogPostEditor = ({ isEdit }) => {
                 )}
 
                 <button
-                  className="flex items-center gap-2.5 text-[13px] font-medium text-sky-500 bg-sky-50/60 rounded px-1.5 md:px-3 py-1 md:py-[3px] border border-sky-100 hover:border-sky-400 cursor-pointer hover:scale-[1.02] transition-all"
+                  className="flex items-center gap-2.5 text-[13px] font-medium text-sky-500 bg-sky-50/60 rounded px-1.5 md:px-3 py-1 md:py-0.75 border border-sky-100 hover:border-sky-400 cursor-pointer hover:scale-[1.02] transition-all"
                   disabled={loading}
                   onClick={() => handlePublish(true)}
                 >
@@ -258,7 +258,7 @@ const BlogPostEditor = ({ isEdit }) => {
                 </button>
 
                 <button
-                  className="flex items-center gap-2.5 text-[13px] font-medium text-sky-600 hover:text-white hover:bg-linear-to-r hover:from-sky-500 hover:to-indigo-500 rounded px-3 py-[3px] border border-sky-500 hover:border-sky-50 cursor-pointer transition-all"
+                  className="flex items-center gap-2.5 text-[13px] font-medium text-sky-600 hover:text-white hover:bg-linear-to-r hover:from-sky-500 hover:to-indigo-500 rounded px-3 py-0.75 border border-sky-500 hover:border-sky-50 cursor-pointer transition-all"
                   disabled={loading}
                   onClick={() => handlePublish(false)}
                 >
