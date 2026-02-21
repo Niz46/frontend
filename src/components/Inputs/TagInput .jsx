@@ -44,7 +44,7 @@ const TagInput = ({ tags, setTags }) => {
   };
 
   return (
-    <div className="flex flex-wrap gap-2 items-center border border-gray-300 rounded-md p-2 min-h-[48px] mt-3">
+    <div className="flex flex-wrap gap-2 items-center border border-gray-300 rounded-md p-2 min-h-12 mt-3">
       {tags.map((tag, i) => (
         <div
           className="flex items-center bg-sky-100/70 text-sky-700 px-3 py-1 rounded text-sm font-medium"
@@ -63,7 +63,7 @@ const TagInput = ({ tags, setTags }) => {
       <input
         type="text"
         value={input}
-        className="flex-1 min-w-[120px] border-none outline-none text-sm p-1"
+        className="flex-1 min-w-30 border-none outline-none text-sm p-1"
         placeholder="Type and press enter or comma"
         onKeyDown={handleKeyDown}
         onChange={handleChange}

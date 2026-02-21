@@ -23,6 +23,7 @@ import uploadVideos from "../../utils/uploadVideo";
 import { toast } from "react-hot-toast";
 import { getToastMessageByType } from "../../utils/helper";
 import DeleteAlertContent from "../../components/DeleteAlertContent";
+import DocumentUploader from "../../components/Inputs/DocumentUploader";
 
 const BlogPostEditor = ({ isEdit }) => {
   const navigate = useNavigate();
@@ -317,6 +318,20 @@ const BlogPostEditor = ({ isEdit }) => {
               <label className="text-xs font-medium text-slate-600">
                 Content
               </label>
+
+              <div className="mt-2">
+                <DocumentUploader
+                  onConverted={(markdown) => {
+                    handleValueChange("content", markdown);
+                    // Optionally set generatedByAI to false because it's imported content
+                    handleValueChange("generatedByAI", false);
+                    toast.success(
+                      "Document imported — content loaded to editor",
+                    );
+                  }}
+                  maxFileSize={10 * 1024 * 1024}
+                />
+              </div>
 
               <div className="mt-3" data-color-mode="light">
                 <MDEditor
