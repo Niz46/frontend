@@ -70,7 +70,7 @@ const BlogPosts = () => {
 
     try {
       // debug/log request url (helps when debugging)
-      console.log("Deleting post:", postId, API_PATHS.POSTS.DELETE(postId));
+      // console.log("Deleting post:", postId, API_PATHS.POSTS.DELETE(postId));
       await axiosInstance.delete(API_PATHS.POSTS.DELETE(postId));
 
       toast.success("Blog Post Deleted Successfully");
@@ -138,9 +138,7 @@ const BlogPosts = () => {
               likes={post.likes}
               views={post.views}
               onClick={() => navigate(`/admin/edit/${post.slug}`)}
-              onDelete={() =>
-                setOpenDeleteAlert({ open: true, data: post.id })
-              }
+              onDelete={() => setOpenDeleteAlert({ open: true, data: post.id })}
             />
           ))}
 
