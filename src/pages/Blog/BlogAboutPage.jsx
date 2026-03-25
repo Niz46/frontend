@@ -62,7 +62,7 @@ const longEnglishText = (
           className="flex gap-3 items-start bg-white/60 p-3 rounded-lg shadow-sm"
         >
           <div className="flex-none w-8 h-8 rounded-full flex items-center justify-center font-semibold text-sky-600">
-            {String.fromCharCode(97 + idx) /* a, b, c... */}
+            {String.fromCharCode(97 + idx)}
           </div>
           <div className="text-sm text-gray-700">{obj}</div>
         </div>
@@ -163,11 +163,16 @@ const frenchText = (
 
 const AboutPage = () => {
   const [lang, setLang] = useState("en");
+  const [modalType, setModalType] = useState(null); // "contact" | "support" | null
+
+  const email = "enquiry@uaacaiinternational.org";
+  const website = "https://www.uaacaiinternational.org";
+  const telephone = "08033222929";
+  const whatsappNumber = "2348033222929"; // international format for wa.me
 
   return (
     <BlogLayout activeMenu="About">
       <main className="about-container max-w-7xl mx-auto px-6 py-6">
-        {/* Hero */}
         <header className="text-center">
           <div className="inline-flex flex-col sm:flex-row items-center gap-6 bg-linear-to-r from-sky-50 to-white/60 px-6 py-6 rounded-xl shadow-lg">
             <img
@@ -176,7 +181,6 @@ const AboutPage = () => {
               className="flex-none w-40 sm:w-52 md:w-64 lg:w-112.5 max-w-full h-auto object-contain drop-shadow-2xl"
             />
 
-            {/* text column: allow shrinking with min-w-0 and take remaining space with flex-1 */}
             <div className="text-left flex-1 min-w-0">
               <h1 className="text-lg sm:text-2xl md:text-4xl font-extrabold leading-tight wrap-break-word">
                 United Action Against Corruption &amp; Injustice (UAACAI)
@@ -196,29 +200,34 @@ const AboutPage = () => {
             </div>
           </div>
 
-          {/* language toggle */}
           <div className="mt-6 flex justify-center gap-3">
             <button
               onClick={() => setLang("en")}
-              className={`px-4 py-2 rounded-md font-medium ${lang === "en" ? "bg-sky-600 text-white" : "bg-white border"}`}
+              className={`px-4 py-2 rounded-md font-medium ${
+                lang === "en"
+                  ? "bg-sky-600 text-white"
+                  : "bg-white border border-gray-300"
+              }`}
             >
               English
             </button>
             <button
               onClick={() => setLang("fr")}
-              className={`px-4 py-2 rounded-md font-medium ${lang === "fr" ? "bg-sky-600 text-white" : "bg-white border"}`}
+              className={`px-4 py-2 rounded-md font-medium ${
+                lang === "fr"
+                  ? "bg-sky-600 text-white"
+                  : "bg-white border border-gray-300"
+              }`}
             >
               Français
             </button>
           </div>
         </header>
 
-        {/* Body Card */}
         <section className="mt-8 bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-xl">
           <div className="prose max-w-none text-gray-800">
             {lang === "en" ? (
               <>
-                {/* Intro + full English content */}
                 {longEnglishText}
 
                 <hr className="my-6" />
@@ -237,8 +246,6 @@ const AboutPage = () => {
                     Full English legal text (expand)
                   </summary>
                   <div className="mt-3 text-sm text-gray-700 leading-relaxed">
-                    {/* Insert the long legal text that was in original content (kept concise here to avoid repetition).
-                        If you want the exact original paragraphs verbatim, replace this block with them. */}
                     <p>
                       Provided that nothing herein shall prevent the payment, in
                       good faith, of reasonable and proper remuneration to any
@@ -255,7 +262,6 @@ const AboutPage = () => {
               </>
             ) : (
               <>
-                {/* French summary + key sections (full french text can be placed here) */}
                 {frenchText}
 
                 <hr className="my-6" />
@@ -276,7 +282,6 @@ const AboutPage = () => {
             )}
           </div>
 
-          {/* Contact / Call to action */}
           <div className="mt-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <p className="text-sm text-gray-600">
@@ -284,32 +289,148 @@ const AboutPage = () => {
                 out through our contact channels listed on this site.
               </p>
             </div>
+
             <div className="flex gap-3">
-              <a
-                href="/"
+              <button
+                type="button"
+                onClick={() => setModalType("contact")}
                 className="inline-block px-4 py-2 rounded-md bg-sky-600 text-white font-semibold shadow hover:bg-sky-700"
-                aria-label="Go to contact page"
+                aria-label="Open contact details"
               >
                 Contact Us
-              </a>
-              <a
-                href="/"
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setModalType("support")}
                 className="inline-block px-4 py-2 rounded-md border border-sky-600 text-sky-600 font-semibold hover:bg-sky-50"
-                aria-label="Support UAACAI"
+                aria-label="Open support options"
               >
                 Support
-              </a>
+              </button>
             </div>
           </div>
         </section>
 
-        {/* Footer note */}
         <footer className="mt-8 text-center text-xs text-gray-500">
           <p>
             All information shown is a summary of UAACAI International's
             constitution and objectives.
           </p>
         </footer>
+
+        {/* Modal */}
+        {modalType && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4"
+            onClick={() => setModalType(null)}
+          >
+            <div
+              className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="uaacai-modal-title"
+            >
+              <div className="flex items-center justify-between gap-4">
+                <h2 id="uaacai-modal-title" className="text-2xl font-bold">
+                  {modalType === "contact"
+                    ? "Contact Details"
+                    : "Support Options"}
+                </h2>
+                <button
+                  type="button"
+                  onClick={() => setModalType(null)}
+                  className="rounded-full px-3 py-1 text-gray-500 hover:bg-gray-100 hover:text-gray-800"
+                  aria-label="Close modal"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {modalType === "contact" ? (
+                <div className="mt-5 space-y-4 text-sm text-gray-700">
+                  <p>
+                    <span className="font-semibold">Website:</span>{" "}
+                    <a
+                      href={website}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-sky-600 hover:underline"
+                    >
+                      {website}
+                    </a>
+                  </p>
+                  <p>
+                    <span className="font-semibold">Email:</span>{" "}
+                    <a
+                      href={`mailto:${email}`}
+                      className="text-sky-600 hover:underline"
+                    >
+                      {email}
+                    </a>
+                  </p>
+                  <p>
+                    <span className="font-semibold">Telephone:</span>{" "}
+                    <a
+                      href={`tel:${telephone}`}
+                      className="text-sky-600 hover:underline"
+                    >
+                      {telephone}
+                    </a>
+                  </p>
+                </div>
+              ) : (
+                <div className="mt-5 space-y-4 text-sm text-gray-700">
+                  <p>
+                    For support, you can contact UAACAI International through:
+                  </p>
+                  <p>
+                    <span className="font-semibold">Email Support:</span>{" "}
+                    <a
+                      href={`mailto:${email}`}
+                      className="text-sky-600 hover:underline"
+                    >
+                      {email}
+                    </a>
+                  </p>
+                  <p>
+                    <span className="font-semibold">WhatsApp Support:</span>{" "}
+                    <a
+                      href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
+                        "Hello UAACAI International, I need support.",
+                      )}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-sky-600 hover:underline"
+                    >
+                      Chat on WhatsApp
+                    </a>
+                  </p>
+                  <p>
+                    <span className="font-semibold">Telephone:</span>{" "}
+                    <a
+                      href={`tel:${telephone}`}
+                      className="text-sky-600 hover:underline"
+                    >
+                      {telephone}
+                    </a>
+                  </p>
+                </div>
+              )}
+
+              <div className="mt-6 flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => setModalType(null)}
+                  className="rounded-md bg-sky-600 px-4 py-2 font-semibold text-white hover:bg-sky-700"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
     </BlogLayout>
   );
