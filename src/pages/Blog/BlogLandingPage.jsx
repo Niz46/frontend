@@ -10,7 +10,7 @@ const BlogLandingPage = () => {
   };
 
   const handleContact = () => {
-    navigate("/gallery");
+    navigate("/contact");
   };
 
   return (
@@ -42,7 +42,7 @@ const BlogLandingPage = () => {
               onClick={handleContact}
               className="btn-secondary px-7 py-3 mb-4 rounded-full border border-sky-200 bg-white/90 text-sky-700 shadow-sm transform transition-transform hover:scale-105"
             >
-              Our Gallery
+              Contact Us
             </button>
           </div>
         </section>
