@@ -8,13 +8,17 @@ import { API_PATHS, BASE_URL } from "./apiPath";
  * Returns Promise<Array<{url: string, timestamp: string}>> on success.
  * Throws an object { message, ... } on failure (same shape your frontend already expects).
  */
-const uploadImagesPublic = async (imageFiles, { debugFormData = false } = {}) => {
+const uploadImagesPublic = async (imageFiles, { category = "Other", debugFormData = false } = {}) => {
   const files = Array.isArray(imageFiles) ? imageFiles : [imageFiles];
   const formData = new FormData();
 
   files.forEach((file) => {
     formData.append("images", file);
   });
+
+  if (category) {
+    formData.append("category", category);
+  }
 
   if (debugFormData && typeof formData.forEach === "function") {
     // dev-only: inspect keys/values (safe to log objects only; don't print binary)

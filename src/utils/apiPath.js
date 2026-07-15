@@ -12,6 +12,10 @@ export const API_PATHS = {
     UPLOAD_IMAGE_PUBLIC: "/api/auth/upload-images-public",
   },
 
+  GALLERY: {
+    GET_BY_TAG: (tag) => `/api/gallery?tag=${tag}`,
+  },
+
   VIDEO: {
     UPLOAD_VIDEO: "/api/auth/upload-videos",
   },
