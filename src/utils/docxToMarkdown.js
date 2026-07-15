@@ -5,6 +5,7 @@ import TurndownService from "turndown";
 /**
  * Convert .docx ArrayBuffer -> Markdown.
  * This version converts embedded images to data URIs so images appear inline.
+ * It also sanitizes the output to prevent database encoding errors (e.g., PostgreSQL null byte issues).
  *
  * @param {ArrayBuffer} arrayBuffer
  * @returns {Promise<string>} markdown
@@ -37,5 +38,10 @@ export default async function docxToMarkdown(arrayBuffer) {
   });
 
   const markdown = turndownService.turndown(html);
-  return markdown;
+
+  // Sanitize the output: Remove hidden null bytes (\x00 / \u0000) often found in parsed documents.
+  // This prevents the PostgreSQL 'invalid byte sequence for encoding "UTF8": 0x00' error.
+  const sanitizedMarkdown = markdown.replace(/\0/g, "");
+
+  return sanitizedMarkdown;
 }

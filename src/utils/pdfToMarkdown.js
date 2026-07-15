@@ -12,6 +12,8 @@ try {
 
 /**
  * Convert PDF ArrayBuffer -> plain text/markdown-like string.
+ * It also sanitizes the output to prevent database encoding errors (e.g., PostgreSQL null byte issues).
+ *
  * @param {ArrayBuffer} arrayBuffer
  * @param {(progress:number)=>void} onProgress optional
  * @returns {Promise<string>}
@@ -48,7 +50,11 @@ export default async function pdfToMarkdown(arrayBuffer, onProgress = null) {
       .replace(/[ \t]+/g, " ")
       .trim();
 
-    return normalized;
+    // Sanitize the output: Remove hidden null bytes (\x00 / \u0000) often introduced during PDF parsing.
+    // This prevents the PostgreSQL 'invalid byte sequence for encoding "UTF8": 0x00' error.
+    const sanitizedMarkdown = normalized.replace(/\0/g, "");
+
+    return sanitizedMarkdown;
   } catch (err) {
     throw new Error(`PDF conversion failed: ${err?.message || err}`);
   }
