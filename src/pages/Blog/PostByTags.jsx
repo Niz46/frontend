@@ -15,7 +15,7 @@ const PostByTags = () => {
   const getPostsByTag = async () => {
     try {
       const response = await axiosInstance.get(
-        API_PATHS.POSTS.GET_BY_TAG(tagName)
+        API_PATHS.POSTS.GET_BY_TAG(tagName),
       );
 
       setBlogPostList(response.data?.length > 0 ? response.data : []);
@@ -33,6 +33,7 @@ const PostByTags = () => {
     return () => {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tagName]);
+
   return (
     <BlogLayout activeMenu={tagName}>
       <div>
@@ -51,9 +52,10 @@ const PostByTags = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {blogPostList.length > 0 &&
-                blogPostList.map((item) => (
+                blogPostList.map((item, index) => (
                   <BlogPostSummaryCard
-                    key={item._id}
+                    // Robust unique key fallback chain
+                    key={item._id || item.id || `post-${index}`}
                     title={item.title}
                     coverImageUrl={item.coverImageUrl}
                     // coverVideoUrl={item.coverVideoUrl}
@@ -64,8 +66,9 @@ const PostByTags = () => {
                         ? moment(item.updatedAt).format("Do MMM YYYY")
                         : "-"
                     }
-                    authorName={item.author.name}
-                    authorProfileImg={item.author.profileImageUrl}
+                    // Optional chaining safeguards against missing author details
+                    authorName={item.author?.name || "Anonymous"}
+                    authorProfileImg={item.author?.profileImageUrl || ""}
                     onClick={() => handleClick(item)}
                   />
                 ))}
