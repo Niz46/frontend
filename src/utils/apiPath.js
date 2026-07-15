@@ -13,7 +13,7 @@ export const API_PATHS = {
   },
 
   GALLERY: {
-    GET_BY_TAG: (tag) => `/api/gallery?tag=${tag}`,
+    GET_BY_TAG: (tag) => `/api/posts/gallery?tag=${tag}`,
   },
 
   VIDEO: {
