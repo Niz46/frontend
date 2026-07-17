@@ -329,7 +329,7 @@ const BlogPostEditor = ({ isEdit }) => {
                       "Document imported — content loaded to editor",
                     );
                   }}
-                  maxFileSize={10 * 1024 * 1024}
+                  maxFileSize={25 * 1024 * 1024}
                 />
               </div>
 
