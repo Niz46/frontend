@@ -65,7 +65,7 @@ const GenerateBlogPostForm = ({
   return (
     <div className="w-[90vw] md:w-[35vw] p-7 flex flex-col justify-center">
       <h3 className="text-lg font-semibold text-black">Generate a Blog Post</h3>
-      <p className="text-xs text-slate-700 mt-[5px] mb-3">
+      <p className="text-xs text-slate-700 mt-1.25 mb-3">
         Provide a title and tone to generate your blog post.
       </p>
 

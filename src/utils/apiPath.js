@@ -54,4 +54,10 @@ export const API_PATHS = {
     GET_ALL_BY_POST: (postId) => `/api/comments/${postId}`,
     DELETE: (commentId) => `/api/comments/${commentId}`,
   },
+
+  EVENTS: {
+    CREATE: "/api/events",
+    GET_UPCOMING: "/api/events/upcoming",
+    DELETE: (id) => `/api/events/${id}`,
+  },
 };

@@ -1,3 +1,4 @@
+// src/utils/data.js
 import {
   LuLayoutDashboard,
   LuGalleryVerticalEnd,
@@ -8,6 +9,7 @@ import {
   LuTag,
   LuUser,
   LuCrown,
+  LuCalendarDays,
 } from "react-icons/lu";
 
 export const SIDE_MENU_DATA = [
@@ -34,6 +36,13 @@ export const SIDE_MENU_DATA = [
 
   {
     id: "04",
+    label: "Events",
+    icon: LuCalendarDays,
+    path: "/admin/events",
+  },
+
+  {
+    id: "05",
     label: "Users",
     icon: LuUser,
     path: "/admin/users",
@@ -72,8 +81,8 @@ export const BLOG_NAVBAR_DATA = [
   {
     id: "05",
     label: "Events",
-    icon: LuTag,
-    path: "/tag/Events",
+    icon: LuCalendarDays,
+    path: "/events",
   },
   {
     id: "06",

@@ -83,10 +83,10 @@ const SignUp = ({ setCurrentPage, showAdminToken = false }) => {
   };
 
   return (
-    <div className="flex items-center h-auto md:h-[520px]">
+    <div className="flex items-center h-auto md:h-130">
       <div className="w-[90vw] md:w-[43vw] p-7 flex flex-col justify-center">
         <h3 className="text-lg font-semibold text-black">Create an Account</h3>
-        <p className="text-xs text-slate-700 mt-[5px] mb-6">
+        <p className="text-xs text-slate-700 mt-1.25 mb-6">
           Join us today by entering your details
         </p>
 
@@ -150,7 +150,7 @@ const SignUp = ({ setCurrentPage, showAdminToken = false }) => {
         <img
           src={AUTH_IMG}
           alt="signup"
-          className="h-[520px] w-[33vw] object-cover"
+          className="h-130 w-[33vw] object-cover"
         />
       </div>
     </div>

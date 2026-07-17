@@ -15,6 +15,8 @@ import BlogPostEditor from "./pages/Admin/BlogPostEditor";
 import Comments from "./pages/Admin/Comments";
 import AdminUsersPage from "./pages/Admin/UsersPage";
 import BlogAboutPage from "./pages/Blog/BlogAboutPage";
+import UpcomingEvents from "./pages/Blog/UpcomingEvents";
+import EventsManager from "./pages/Admin/EventsManager";
 
 const App = () => (
   <Router>
@@ -26,6 +28,7 @@ const App = () => (
       <Route path="/:slug" element={<BlogPostViews />} />
       <Route path="/tag/:tagName" element={<PostByTags />} />
       <Route path="/search" element={<SearchPosts />} />
+      <Route path="/events" element={<UpcomingEvents />} />
 
       {/* Protected Admin */}
       <Route element={<PrivateRoutes allowedRoles={["admin"]} />}>
@@ -37,6 +40,7 @@ const App = () => (
           element={<BlogPostEditor isEdit />}
         />
         <Route path="/admin/comments" element={<Comments />} />
+        <Route path="/admin/events" element={<EventsManager />} />
         <Route path="/admin/users" element={<AdminUsersPage />} />
       </Route>
 
