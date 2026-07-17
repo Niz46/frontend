@@ -25,7 +25,7 @@ const UpcomingEvents = () => {
   }, []);
 
   return (
-    <BlogLayout activeMenu="Events">
+    <BlogLayout activeMenu="Upcoming Events">
       <div className="max-w-6xl mx-auto pb-16">
         {/* Page Header */}
         <div className="text-center mb-12">

@@ -113,7 +113,7 @@ const EventsManager = () => {
   };
 
   return (
-    <DashboardLayout activeMenu="Events">
+    <DashboardLayout activeMenu="Upcoming Events">
       {/* Title Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mt-5 mb-6">
         <div>

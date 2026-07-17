@@ -36,16 +36,15 @@ export const SIDE_MENU_DATA = [
 
   {
     id: "04",
-    label: "Events",
-    icon: LuCalendarDays,
-    path: "/admin/events",
-  },
-
-  {
-    id: "05",
     label: "Users",
     icon: LuUser,
     path: "/admin/users",
+  },
+  {
+    id: "05",
+    label: "Upcoming Events",
+    icon: LuCalendarDays,
+    path: "/admin/events",
   },
 ];
 
@@ -81,13 +80,19 @@ export const BLOG_NAVBAR_DATA = [
   {
     id: "05",
     label: "Events",
-    icon: LuCalendarDays,
-    path: "/events",
+    icon: LuTag,
+    path: "/tag/Events",
   },
   {
     id: "06",
     label: "Awardees",
     icon: LuCrown,
     path: "/tag/Awardees",
+  },
+  {
+    id: "07",
+    label: "Upcoming Events",
+    icon: LuCalendarDays,
+    path: "/events",
   },
 ];

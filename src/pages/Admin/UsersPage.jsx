@@ -21,7 +21,7 @@ const AdminUsersPage = () => {
 
   return (
     <DashboardLayout activeMenu="Users">
-      <div className="mt-6 w-auto sm:max-w-[900px] mx-auto">
+      <div className="mt-6 w-auto sm:max-w-225 mx-auto">
         {/* Card container */}
         <div className="bg-white rounded-2xl shadow-md border border-gray-200/50 p-6">
           {/* Header */}
