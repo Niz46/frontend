@@ -190,7 +190,7 @@ const BlogPostEditor = ({ isEdit }) => {
 
         setPostData((prevState) => ({
           ...prevState,
-          id: data._id,
+          id: data.id,
           title: data.title,
           content: data.content,
           coverImagePreview: data.coverImageUrl,
