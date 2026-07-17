@@ -117,7 +117,7 @@ const BlogPostGallery = () => {
         {/* Header Section */}
         <div className="mb-8 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
-            <h1 className="text-4xl font-extrabold tracking-tight text-blue-500 mb-2">
+            <h1 className="text-4xl font-extrabold tracking-tight text-sky-500 mb-2">
               Media Gallery
             </h1>
             <p className="text-base text-gray-500 max-w-2xl">
@@ -141,7 +141,7 @@ const BlogPostGallery = () => {
                     className={`flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold shadow-sm transition-all ${
                       uploading
                         ? "cursor-wait bg-gray-100 text-gray-400"
-                        : "bg-blue-500 text-white hover:bg-gray-800 hover:shadow-md hover:-translate-y-0.5"
+                        : "bg-sky-500 text-white hover:bg-gray-800 hover:shadow-md hover:-translate-y-0.5"
                     }`}
                   >
                     {uploading ? (

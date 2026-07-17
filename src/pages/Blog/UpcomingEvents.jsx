@@ -29,10 +29,10 @@ const UpcomingEvents = () => {
       <div className="max-w-6xl mx-auto pb-16">
         {/* Page Header */}
         <div className="text-center mb-12">
-          <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-gray-900">
+          <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-sky-500">
             Upcoming Events
           </h1>
-          <p className="mt-4 text-base md:text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="mt-4 text-base md:text-lg text-gray-500 max-w-2xl mx-auto">
             Stay connected with our scheduled activities, community journals,
             and local gatherings.
           </p>
